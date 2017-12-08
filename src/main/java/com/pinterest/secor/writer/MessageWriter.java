@@ -16,11 +16,7 @@
  */
 package com.pinterest.secor.writer;
 
-import com.pinterest.secor.common.FileRegistry;
-import com.pinterest.secor.common.LogFilePath;
-import com.pinterest.secor.common.OffsetTracker;
-import com.pinterest.secor.common.SecorConfig;
-import com.pinterest.secor.common.TopicPartition;
+import com.pinterest.secor.common.*;
 import com.pinterest.secor.io.FileWriter;
 import com.pinterest.secor.io.KeyValue;
 import com.pinterest.secor.message.Message;
@@ -64,7 +60,7 @@ public class MessageWriter {
         } else if (mFileExtension == null){
             mFileExtension = "";
         }
-        
+
         mLocalPrefix = mConfig.getLocalPath() + '/' + IdUtil.getLocalMessageDir();
         mGeneration = mConfig.getGeneration();
     }

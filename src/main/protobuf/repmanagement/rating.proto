@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package zenreach.repmanagement;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/zenreach/platypus/protocols/repmanagement";
+option java_package = "com.zenreach.repmanagement";
+
+message BusinessRatingEvent {
+    // Unique ID of the rating.
+    // Represented as bson ObjectId.
+    bytes id = 1;
+
+    // Unique ID of the location.
+    // Represented as bson ObjectId.
+    bytes business_id = 2;
+
+    // Unique ID of the portal session.
+    // Represented as uuid.
+    string portal_session_uuid = 3;
+
+    // Unique ID of the user.
+    // Represented as bson ObjectId.
+    bytes user_id = 4;
+
+    // Unique ID of the message.
+    // Represented as bson ObjectId.
+    bytes message_id = 5;
+
+    // Rating value.
+    uint32 rating = 6;
+
+    // Timestamp of when the rating value was last updated.
+    google.protobuf.Timestamp rating_updated = 7;
+
+    // Timestamp of when the rating value was submitted.
+    google.protobuf.Timestamp rating_submitted = 8;
+
+    // Timestamp of when the rating was created.
+    google.protobuf.Timestamp created = 9;
+
+    // Comments provided by the user.
+    string comments = 10;
+
+    // Timestamp of when the comments were last updated.
+    google.protobuf.Timestamp comments_updated = 11;
+
+    // The URL clicked by the user.
+    string clicked_url = 12;
+
+    // The URL type clicked by the user.
+    string clicked_url_type = 13;
+
+    // Timestamp of when the rating was updated.
+    google.protobuf.Timestamp updated = 14;
+
+    // Timestamp of when the rating notification was sent.
+    google.protobuf.Timestamp notification_sent = 15;
+
+    // Timestamp of when the merchant responded.
+    google.protobuf.Timestamp responded = 16;
+}

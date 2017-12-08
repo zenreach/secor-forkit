@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package zenreach.redshiftconnector;
+
+option go_package = "github.com/zenreach/platypus/protocols/redshiftconnector";
+
+import "google/protobuf/timestamp.proto";
+
+message S3WriteLog {
+    // Path to the data on S3
+    string s3_path = 1;
+
+    // Name of the upstream topic the data came from
+    string upstream_topic = 2;
+
+    // Timestamp of the creation of this message
+    google.protobuf.Timestamp timestamp = 3;
+}

@@ -1,0 +1,20 @@
+syntax = "proto3";
+package zenreach.sms;
+
+option go_package = "github.com/zenreach/platypus/protocols/sms";
+option java_package = "com.zenreach.sms";
+
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+    package_name: "com.zenreach.sms"
+    single_file: true
+    flat_package: true
+};
+
+message Message {
+    string id = 1;
+    string to_number = 2;
+    int64 sent_time_ms = 3;
+    map<string, string> metadata = 4;
+}

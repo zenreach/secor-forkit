@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package zenreach.portal;
+
+option go_package = "github.com/zenreach/platypus/protocols/portal";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+message PortalEvent {
+    // Unique ID of the portal event.
+    // Represented as UUID.
+    bytes id = 1;
+
+    // Unique ID of the location.
+    // Represented as bson ObjectId.
+    bytes location_id = 2;
+
+    // Unique ID of the user's session.
+    // Represented as UUID.
+    bytes session_id = 3;
+
+    // MAC address of the Access Point.
+    bytes ap_mac = 4;
+
+    // MAC address of the Client.
+    bytes client_mac = 5;
+
+    // Type of Access Point.
+    // eg. aruba
+    // eg. meraki
+    string ap_type = 6;
+
+    // When the event occurred.
+    google.protobuf.Timestamp timestamp = 7;
+
+    // Type of event that occurred.
+    // Event types are a past-tense verb followed by the object.
+    // eg. Viewed Online Page
+    // eg. Clicked Go Online Button
+    string event_type = 8;
+
+    // Any additional context for this event.
+    // eg. For a "Viewed" event, store the page load time
+    // eg. For a "Viewed" event, include details about portal customizations
+    // eg. When clicking a "Submit" button, include any relevant selections
+    google.protobuf.Struct event_context = 9;
+
+    // Name of the user's platform
+    // eg. android, iphone, macos, windows
+    string platform = 10;
+
+    // Name of the user's browser
+    // eg. chrome, firefox, safari
+    string browser = 11;
+
+    // Version of the user's browser
+    string browser_version = 12;
+
+    // Any additional context for this user.
+    google.protobuf.Struct user_context = 13;
+}

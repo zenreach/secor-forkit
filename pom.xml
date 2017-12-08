@@ -47,8 +47,8 @@
     </scm>
 
     <properties>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <encoding>UTF-8</encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <parquet.version>1.9.0</parquet.version>
@@ -92,6 +92,16 @@
             <artifactId>protobuf-java</artifactId>
             <version>3.1.0</version>
         </dependency>
+				<dependency>
+					<groupId>org.scala-lang</groupId>
+					<artifactId>scala-library</artifactId>
+					<version>2.11.8</version>
+				</dependency>
+				<dependency>
+					<groupId>com.github.pureconfig</groupId>
+					<artifactId>pureconfig_2.11</artifactId>
+					<version>0.8.0</version>
+				</dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java-util</artifactId>
@@ -233,8 +243,8 @@
         </dependency>
         <dependency>
             <groupId>com.twitter</groupId>
-            <artifactId>ostrich_2.10</artifactId>
-            <version>9.2.1</version>
+            <artifactId>ostrich_2.11</artifactId>
+            <version>9.27.0</version>
         </dependency>
         <dependency>
             <groupId>com.twitter.common.zookeeper</groupId>
@@ -329,6 +339,19 @@
             </testResource>
         </testResources>
         <plugins>
+					<plugin>
+						<groupId>net.alchim31.maven</groupId>
+						<artifactId>scala-maven-plugin</artifactId>
+						<version>3.3.1</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>compile</goal>
+									<goal>testCompile</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -412,6 +435,30 @@
 				<artifactId>protoc-jar-maven-plugin</artifactId>
 				<version>3.1.0</version>
 				<executions>
+					<execution>
+						<id>protobuf-main-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<protocVersion>3.1.0</protocVersion>
+							<includeDirectories>
+								<include>src/main/protobuf</include>
+							</includeDirectories>
+							<inputDirectories>
+								<include>src/main/protobuf</include>
+              </inputDirectories>
+                            <includeStdTypes>true</includeStdTypes>
+							<outputTargets>
+								<outputTarget>
+									<type>java</type>
+									<addSources>none</addSources>
+									<outputDirectory>target/generated-sources/protobuf/java</outputDirectory>
+								</outputTarget>
+							</outputTargets>
+						</configuration>
+					</execution>
 					<execution>
 						<id>protobuf-test-sources</id>
 						<phase>generate-test-sources</phase>
@@ -646,8 +693,8 @@
             <dependencies>
                 <dependency>
                     <groupId>org.apache.kafka</groupId>
-                    <artifactId>kafka_2.10</artifactId>
-                    <version>0.10.2.0</version>
+                    <artifactId>kafka_2.11</artifactId>
+                    <version>1.0.0</version>
                     <exclusions>
                         <exclusion>
                             <groupId>org.slf4j</groupId>

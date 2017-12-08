@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package zenreach.common;
+
+option go_package = "github.com/zenreach/platypus/protocols/common";
+option java_package = "com.zenreach.common";
+
+import "google/protobuf/timestamp.proto";
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+    package_name: "com.zenreach.common"
+    single_file: true
+    flat_package: true
+    import: "com.zenreach.data.types.ProtobufConversions._"
+};
+
+// EventSource describes the source of an event.
+message EventSource {
+    // The UUID of the instance that sent the event.
+    bytes id = 1 [(scalapb.field).type = "java.util.UUID"];
+
+    // The name of the process that sent the event.
+    string name = 2;
+}
+
+message EventMeta {
+    // The ID of the event. A byte encoded UUID.
+    bytes id = 1 [(scalapb.field).type = "java.util.UUID"];
+
+    // The time of the event.
+    google.protobuf.Timestamp time = 2;
+
+    // The source of the event.
+    EventSource source = 3;
+}

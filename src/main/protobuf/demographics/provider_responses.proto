@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package zenreach.demographics;
+
+option go_package = "github.com/zenreach/platypus/protocols/demographics";
+option java_package = "com.zenreach.demographics";
+
+import "google/protobuf/timestamp.proto";
+import "common/events.proto";
+
+// ProviderResponse represents the response returned from a demographics provider.
+message ProviderResponse {
+    // When the response was created.
+    google.protobuf.Timestamp created = 1;
+
+    // Method of contact. i.e. "email", "sms", "facebook".
+    string contact_method = 2;
+    // The contact identifier for the given method.
+    string contact_info = 3;
+
+    // The name of demographics provider.
+    string provider_name = 4;
+    // The response returned from the demographics provider.
+    string payload = 5;
+}
+
+// ProviderResponseEvent occurs after we receive a response back from a demographics provider.
+message ProviderResponseEvent {
+    // Event metadata.
+    zenreach.common.EventMeta meta = 1;
+    // The response received from a demographics provider.
+    ProviderResponse response = 2;
+}

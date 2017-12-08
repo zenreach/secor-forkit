@@ -21,11 +21,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * One-stop shop for Secor configuration options.
@@ -44,6 +40,7 @@ public class SecorConfig {
             String configProperty = systemProperties.getProperty("config");
 
             PropertiesConfiguration properties;
+
             try {
                 properties = new PropertiesConfiguration(configProperty);
             } catch (ConfigurationException e) {
@@ -67,6 +64,7 @@ public class SecorConfig {
      *
      * @param properties
      */
+
     public SecorConfig(PropertiesConfiguration properties) {
         mProperties = properties;
     }
@@ -170,7 +168,7 @@ public class SecorConfig {
     public String getS3FileSystem() { return getString("secor.s3.filesystem"); }
 
     public boolean getSeparateContainersForTopics() {
-    	return getString("secor.swift.containers.for.each.topic").toLowerCase().equals("true");
+        return getString("secor.swift.containers.for.each.topic").toLowerCase().equals("true");
     }
 
     public String getSwiftContainer() {
@@ -242,7 +240,7 @@ public class SecorConfig {
     }
 
     public String getMessageTransformerClass(){
-    	return getString("secor.message.transformer.class");
+        return getString("secor.message.transformer.class");
     }
 
     public int getTopicPartitionForgetSeconds() {
@@ -286,7 +284,7 @@ public class SecorConfig {
     }
 
     public boolean getAwsProxyEnabled(){
-    	return getBoolean("aws.proxy.isEnabled");
+        return getBoolean("aws.proxy.isEnabled");
     }
 
     public String getAwsProxyHttpHost() {
@@ -330,19 +328,19 @@ public class SecorConfig {
     }
 
     public String getSwiftPublic() {
-    	return getString("swift.public");
+        return getString("swift.public");
     }
 
     public String getSwiftPort() {
-    	return getString("swift.port");
+        return getString("swift.port");
     }
 
     public String getSwiftGetAuth() {
-    	return getString("swift.use.get.auth");
+        return getString("swift.use.get.auth");
     }
 
     public String getSwiftApiKey() {
-    	return getString("swift.api.key");
+        return getString("swift.api.key");
     }
 
     public String getQuboleApiToken() {
@@ -358,7 +356,7 @@ public class SecorConfig {
     }
 
     public boolean getStatsDPrefixWithConsumerGroup(){
-    	return getBoolean("statsd.prefixWithConsumerGroup");
+        return getBoolean("statsd.prefixWithConsumerGroup");
     }
 
     public String getMonitoringBlacklistTopics() {
@@ -431,27 +429,27 @@ public class SecorConfig {
     }
 
     public String getFileReaderWriterFactory() {
-    	return getString("secor.file.reader.writer.factory");
+        return getString("secor.file.reader.writer.factory");
     }
 
     public String getFileReaderDelimiter(){
-      String readerDelimiter = getString("secor.file.reader.Delimiter");
-      if (readerDelimiter.length() > 1) {
-        throw new RuntimeException("secor.file.reader.Delimiter length can not be greater than 1 character");
-      }
-      return readerDelimiter;
+        String readerDelimiter = getString("secor.file.reader.Delimiter");
+        if (readerDelimiter.length() > 1) {
+            throw new RuntimeException("secor.file.reader.Delimiter length can not be greater than 1 character");
+        }
+        return readerDelimiter;
     }
 
     public String getFileWriterDelimiter(){
-      String writerDelimiter = getString("secor.file.writer.Delimiter");
-      if (writerDelimiter.length() > 1) {
-        throw new RuntimeException("secor.file.writer.Delimiter length can not be greater than 1 character");
-      }
-      return writerDelimiter;
+        String writerDelimiter = getString("secor.file.writer.Delimiter");
+        if (writerDelimiter.length() > 1) {
+            throw new RuntimeException("secor.file.writer.Delimiter length can not be greater than 1 character");
+        }
+        return writerDelimiter;
     }
 
     public String getPerfTestTopicPrefix() {
-    	return getString("secor.kafka.perf_topic_prefix");
+        return getString("secor.kafka.perf_topic_prefix");
     }
 
     public String getZookeeperPath() {
@@ -487,7 +485,7 @@ public class SecorConfig {
     }
 
     public boolean getS3MD5HashPrefix() {
-      return getBoolean("secor.s3.prefix.md5hash");
+        return getBoolean("secor.s3.prefix.md5hash");
     }
 
     public String getAzureEndpointsProtocol() { return getString("secor.azure.endpoints.protocol"); }
@@ -540,7 +538,7 @@ public class SecorConfig {
     public void checkProperty(String name) {
         if (!mProperties.containsKey(name)) {
             throw new RuntimeException("Failed to find required configuration option '" +
-                                       name + "'.");
+                    name + "'.");
         }
     }
 
@@ -577,19 +575,19 @@ public class SecorConfig {
     public String getMetricsCollectorClass() {
         return getString("secor.monitoring.metrics.collector.class");
     }
-    
+
     /**
      * This method is used for fetching all the properties which start with the given prefix.
      * It returns a Map of all those key-val.
-     * 
+     *
      * e.g.
      * a.b.c=val1
      * a.b.d=val2
      * a.b.e=val3
-     * 
+     *
      * If prefix is a.b then,
      * These will be fetched as a map {c => val1, d => val2, e => val3}
-     * 
+     *
      * @param prefix
      * @return
      */
@@ -603,11 +601,11 @@ public class SecorConfig {
         }
         return map;
     }
-    
+
     public Map<String, String> getORCMessageSchema() {
         return getPropertyMapForPrefix("secor.orc.message.schema");
     }
-    
+
     public String getORCSchemaProviderClass(){
         return getString("secor.orc.schema.provider");
     }

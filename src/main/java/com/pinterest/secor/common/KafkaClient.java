@@ -32,7 +32,6 @@ import kafka.javaapi.TopicMetadataResponse;
 import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.message.MessageAndOffset;
 import org.apache.kafka.common.protocol.Errors;
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -195,7 +194,7 @@ public class KafkaClient {
         }
     }
 
-    public Message getLastMessage(TopicPartition topicPartition) throws TException {
+    public Message getLastMessage(TopicPartition topicPartition) throws Exception {
         SimpleConsumer consumer = null;
         try {
             consumer = createConsumer(topicPartition);

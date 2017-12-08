@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package zenreach.visits;
+option go_package = "github.com/zenreach/platypus/protocols/visits";
+option java_package = "com.zenreach.visits";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+import "scalapb/scalapb.proto";
+import "visits/visits.proto";
+import "crm/contacts.proto";
+
+option (scalapb.options) = {
+    // All classes that extend a sealed trait need to be in the same Scala
+    // file, so we set single_file to true.
+    package_name: "com.zenreach.visits"
+    single_file: true
+    flat_package: true
+    import: "com.zenreach.data.types.ProtobufConversions._"
+};
+
+message ProbeStats {
+    int32 min_rssi = 1;
+    int32 max_rssi = 2;
+    double avg_rssi = 3;
+    int64 blip_count = 4;
+}
+
+message SignalStats {
+    google.protobuf.Timestamp first_seen = 1 [(scalapb.field).type = "java.time.Instant"];
+    google.protobuf.Timestamp last_seen = 2 [(scalapb.field).type = "java.time.Instant"];
+    string sensor_type = 3;
+    ProbeStats probe_stats = 4;
+}
+
+message Sighting {
+    zenreach.visits.Source source = 1;
+    zenreach.visits.Status status = 2;
+    bytes location_id = 3 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes client_mac = 4 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
+    uint64 start_time = 5 [(scalapb.field).type = "java.time.Instant"];
+    uint64 end_time = 6 [(scalapb.field).type = "java.time.Instant"];
+    ProbeStats stats = 7;
+    // map of router mac address to signal stats
+    map<uint64, SignalStats> router_stats = 8 [(scalapb.field).key_type = "com.zenreach.data.types.Mac"];
+    google.protobuf.BoolValue is_walk_in = 9;
+}
+
+// Sighting of a device (at multiple routers)
+// these get turned into `Sighting` objects for each business the routers correspond to
+message DeviceSighting {
+    bytes client_mac = 1 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
+
+    // The key here is a MAC address, where the 6 bytes are encoded in Network order (big endian)
+    // into a unsigned long.
+    map<uint64, SignalStats> routers = 2 [(scalapb.field).key_type = "com.zenreach.data.types.Mac"];
+}

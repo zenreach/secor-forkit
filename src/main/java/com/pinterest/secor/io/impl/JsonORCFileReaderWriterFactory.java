@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 
+import com.pinterest.secor.common.SecorConfig;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
@@ -26,7 +27,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.pinterest.secor.common.FileRegistry;
 import com.pinterest.secor.common.LogFilePath;
-import com.pinterest.secor.common.SecorConfig;
 import com.pinterest.secor.io.FileReader;
 import com.pinterest.secor.io.FileReaderWriterFactory;
 import com.pinterest.secor.io.FileWriter;
@@ -39,7 +39,7 @@ import com.pinterest.secor.util.orc.schema.ORCScehmaProvider;
 
 /**
  * ORC reader/writer implementation
- * 
+ *
  * @author Ashish (ashu.impetus@gmail.com)
  *
  */
@@ -172,7 +172,7 @@ public class JsonORCFileReaderWriterFactory implements FileReaderWriterFactory {
 
     /**
      * Used for returning the compression kind used in ORC
-     * 
+     *
      * @param codec
      * @return
      */

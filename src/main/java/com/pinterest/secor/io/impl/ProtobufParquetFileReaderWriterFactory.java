@@ -2,6 +2,7 @@ package com.pinterest.secor.io.impl;
 
 import java.io.IOException;
 
+import com.pinterest.secor.common.SecorConfig;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.parquet.hadoop.ParquetReader;
@@ -13,7 +14,6 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Message.Builder;
 import com.google.protobuf.MessageOrBuilder;
 import com.pinterest.secor.common.LogFilePath;
-import com.pinterest.secor.common.SecorConfig;
 import com.pinterest.secor.io.FileReader;
 import com.pinterest.secor.io.FileReaderWriterFactory;
 import com.pinterest.secor.io.FileWriter;
@@ -23,7 +23,7 @@ import com.pinterest.secor.util.ProtobufUtil;
 
 /**
  * Implementation for reading/writing protobuf messages to/from Parquet files.
- * 
+ *
  * @author Michael Spector (spektom@gmail.com)
  */
 public class ProtobufParquetFileReaderWriterFactory implements FileReaderWriterFactory {

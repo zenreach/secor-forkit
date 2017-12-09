@@ -463,7 +463,7 @@
 							<outputTargets>
 								<outputTarget>
 									<type>java</type>
-									<outputDirectory>src/main/java</outputDirectory>
+                  <outputDirectory>target/generated-sources/protobuf/gen-java</outputDirectory>
 								</outputTarget>
 							</outputTargets>
 						</configuration>

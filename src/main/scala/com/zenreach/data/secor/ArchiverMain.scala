@@ -7,23 +7,18 @@ import com.pinterest.secor.consumer.Consumer
 import com.pinterest.secor.tools.LogFileDeleter
 import com.pinterest.secor.util.{FileUtil, RateLimitUtil}
 import com.twitter.app.{App, Flag}
+import com.twitter.util.{Await, Future}
 import org.slf4j.{Logger, LoggerFactory}
 
 object ArchiverMain extends App {
-  private val log: Logger = LoggerFactory.getLogger(getClass)
-
   val configEnv: Flag[String] =
-    flag("config.name", "default", "The name of the config file to load.")
+    flag("config.name", "defaults.properties", "The name of the config file to load.")
 
-  def main(): Unit = {
-    if (args.length != 0) {
-      System.err.println(
-        s"Usage: java -Dlog4j.configuration=<log4j_properties> ${getClass.getSimpleName}"
-      )
-      return
-    }
+  private lazy val log: Logger = LoggerFactory.getLogger(getClass)
+
+  def main(): Unit =
     try {
-      val config: SecorConfig = EnvironmentSecorConfig.load(configEnv())
+      val config: SecorConfig = EnvironmentSecorConfig.load()
       val ostrichService: OstrichAdminService = new OstrichAdminService(config.getOstrichPort)
       ostrichService.start()
       FileUtil.configure(config)
@@ -55,10 +50,10 @@ object ArchiverMain extends App {
       for (consumer <- consumers) {
         consumer.join()
       }
+      Await.ready(Future.never)
     } catch {
       case t: Throwable =>
         log.error("Consumer failed", t)
         System.exit(1)
     }
-  }
 }

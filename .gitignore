@@ -44,3 +44,10 @@ bin/
 .project
 .classpath
 .m2
+
+## Bazel
+#
+protocols
+3rdparty
+tools-backup
+tools

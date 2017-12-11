@@ -26,7 +26,6 @@ case class EnvConfig(
   localPath: String = File.createTempFile("secor", "archives").getAbsolutePath,
   statsPort: Int = 9990
 ) {
-
   val s3Url: URI = URI.create(remotePath)
   require(s3Url.getScheme == "s3", "Only support S3 at this time as a remote destination")
   val s3Bucket: String = s3Url.getHost

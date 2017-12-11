@@ -8,6 +8,7 @@ import com.pinterest.secor.tools.LogFileDeleter
 import com.pinterest.secor.util.{FileUtil, RateLimitUtil}
 import com.twitter.app.{App, Flag}
 import com.twitter.util.{Await, Future}
+import io.prometheus.client.exporter.HTTPServer
 import org.slf4j.{Logger, LoggerFactory}
 
 object ArchiverMain extends App {
@@ -19,8 +20,7 @@ object ArchiverMain extends App {
   def main(): Unit =
     try {
       val config: SecorConfig = EnvironmentSecorConfig.load()
-      val ostrichService: OstrichAdminService = new OstrichAdminService(config.getOstrichPort)
-      ostrichService.start()
+      new HTTPServer(config.getOstrichPort)
       FileUtil.configure(config)
       val logFileDeleter: LogFileDeleter = new LogFileDeleter(config)
       logFileDeleter.deleteOldLogs()

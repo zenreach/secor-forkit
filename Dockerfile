@@ -5,6 +5,7 @@ ADD container/java.list /etc/apt/sources.list.d/
 
 # Add Maven dependencies (not shaded into the artifact; Docker-cached)
 RUN mkdir -p /opt/secor
+RUN mkdir -p /tmp/secor_data
 
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
 RUN apt-get update && \

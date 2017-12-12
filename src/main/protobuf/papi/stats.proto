@@ -1,0 +1,30 @@
+syntax = "proto3";
+option go_package = "github.com/zenreach/platypus/protocols/papi";
+import "google/protobuf/timestamp.proto";
+
+package zenreach.papi;
+
+// Statistics regarding a given contact.
+message Stats {
+    // offers contains statistics regarding offers for a contact.
+    Offers offers = 1;
+
+    // visits contains visits statistics for a contact.
+    Visits visits = 2;
+}
+
+// Visit statistics for a given contact.
+message Visits {
+    // Last date and time in which a contact visited a location or group.
+    google.protobuf.Timestamp last_seen = 1;
+    // Total number of times a contact has visited a location or group.
+    int64 total = 2;
+}
+
+// Offers statistics for a given contact.
+message Offers {
+    // The number of offers redeemed by the contact.
+    int64 redeemed = 1;
+}
+
+

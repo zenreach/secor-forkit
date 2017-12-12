@@ -5,6 +5,8 @@ JAR_FILE=target/secor-*-SNAPSHOT-bin.tar.gz
 MVN_OPTS=-DskipTests=true -Dmaven.javadoc.skip=true
 CONTAINERS=$(shell ls containers)
 
+.PHONY: build container
+
 build:
 	@mvn package $(MVN_OPTS)
 
@@ -21,6 +23,9 @@ integration: build
 	cd $(TEST_HOME) && ./scripts/run_tests.sh
 
 test: build unit integration
+
+container: build
+	docker build -t secor .
 
 container_%:
 	docker build -t secor_$* containers/$*

@@ -1,0 +1,262 @@
+syntax = "proto3";
+package zenreach.mail;
+
+option go_package = "github.com/zenreach/platypus/protocols/mail";
+option java_package = "com.zenreach.mail";
+
+import "google/protobuf/timestamp.proto";
+
+/**
+ * This schema exposes a normalized mail hook message supporting Mailgun and SendGrid hook events.
+ *
+ * Mailgun
+ * =======
+ *
+ * Events
+ * ------
+ * Most events map 1:1 with the normalized types. Exceptions are noted below.
+ *
+ * bounced              -> type == HARD_BOUNCE
+ * clicked              -> type == CLICK
+ * complained           -> type == SPAM_REPORT
+ * delivered            -> type == DELIVER
+ * dropped [hardfail]   -> type == SOFT_BOUNCE*
+ * dropped [old]        -> type == SOFT_BOUNCE
+ * opened               -> type == OPEN
+ * unsubscribed         -> type == UNSUBSCRIBE
+ *
+ * Mailgun will deliver a dropped hook event whenever it fails to deliver an email. The event will
+ * have a reason of "old" if the message could not be sent after eight hours, naturally mapping
+ * to a SOFT_BOUNCE. The event will otherwise have a reason of "hardfail". The documentation for
+ * "hardfail" is misleading, as it suggests this only occurs if Mailgun rejects an email before
+ * even trying to send it, but additionally hard bounces and soft bounces actually also result in 
+ * a "hardfail".
+ *
+ * More investigation is required into "hardfail" dropped events. For now, we choose to categorize
+ * as SOFT_BOUNCE to avoid overclassifying genuine soft bounces. Fortunately, Mailgun additionally
+ * sends (hard) bounced events before its corresponding dropped event, allowing normal hard bounce
+ * processing to occur.
+ *
+ * Note that at this time, we do not map DROP events from Mailgun at all. Distinguishing these
+ * from other dropped "hardfail" events may require matching with known response strings from
+ * Mailgun.
+ *
+ * Fields
+ * ------
+ * Message-Id           -> envelope.stamp.message_id
+ * X-Mailgun-Sid        -> envelope.stamp.mg_server_id (undocumented)
+ * attachment-count     -> (omitted at this time)
+ * attachment-x         -> (omitted at this time)
+ * campaign-id          -> (omitted; preferring to handle internally)
+ * campaign-name        -> (omitted; preferring to handle internally)
+ * city                 -> (omitted; not available from all ESPs anyway)
+ * client-name          -> (omitted; can be derived from user-agent)
+ * client-os            -> (omitted; can be derived from user-agent)
+ * client-type          -> (omitted; can be derived from user-agent)
+ * code                 -> event.delivery.code
+ * country              -> (omitted; not available from all ESPs anyway)
+ * custom variables     -> arguments.*
+ * description          -> event.delivery.reason
+ * device-type          -> (omitted, can be derived from user-agent)
+ * domain               -> envelope.domain
+ * error                -> event.delivery.reason
+ * event                -> type (mapped)
+ * ip                   -> (omitted; not available from all ESPs anyway)
+ * mailing-list         -> (omitted, as we do not use this feature)
+ * message-headers      -> (omitted at this time)
+ * notification         -> (omitted; seems to be unused, even in "test webhook")
+ * reason               -> (aids in mapping type)
+ * recipient            -> envelope.recipient
+ * region               -> (omitted; not available from all ESPs anyway)
+ * signature            -> (omitted; used in validating hook before processing)
+ * tag                  -> (omitted; preferring to handle internally)
+ * timestamp            -> envelope.timestamp
+ * token                -> (omitted; used in validating hook before processing)
+ * url                  -> event.engagement.url
+ * user-agent           -> event.engagement.user_agent
+ *
+ *
+ * SendGrid
+ * ========
+ *
+ * Events
+ * ------
+ * Most events map 1:1 with the normalized types. Exceptions are noted below.
+ *
+ * SendGrid delivers a deferred event immediately after a temporary sending failure. This does not
+ * predict whether or not the message will be eventually delivered or permanently fail. We
+ * currently ignore this event.
+ *
+ * SendGrid delivers a bounced event if the receiving server could not or would not accept the
+ * message, implying that a hard or soft bounce may have occurred. The bounced event is further
+ * distinguished by its type field. For now, we choose to categorize as SOFT_BOUNCE to avoid 
+ * overclassifying genuine soft bounces. A subsequent attempt to send to an address that actually
+ * hard bounced will hit their hard bounce list, and result in a dropped event instead. More
+ * investigation is required.
+ *
+ * bounce               -> type == HARD_BOUNCE
+ * click                -> type == CLICK
+ * deferred             -> (unused)
+ * delivered            -> type == DELIVER
+ * dropped              -> type == DROP
+ * open                 -> type == OPEN
+ * processed            -> (unused)
+ * spamreport           -> type == SPAM_REPORT
+ * unsubscribe          -> type == UNSUBSCRIBE
+ * group_unsubscribe    -> (unused)
+ * group_resubscribe    -> (unused)
+ *
+ * Fields
+ * ------
+ * smtp-id              -> envelope.stamp.message_id
+ * email                -> envelope.recipient
+ * timestamp            -> envelope.timestamp
+ * event                -> type (mapped)
+ * sg_message_id        -> envelope.stamp.sg_message_id
+ * sg_event_id          -> envelope.stamp.sg_event_id
+ * ip                   -> envelope.ip
+ * tls                  -> (omitted at this time)
+ * cert_err             -> (omitted at this time)
+ * useragent            -> event.engagement.user_agent
+ * custom arguments     -> arguments
+ * category             -> (omitted; preferring to handle internally)
+ * asm_group_id         -> (omitted at this time)
+ * status               -> event.delivery.code
+ * reason               -> event.delivery.reason
+ * url_offset           -> (omitted at this time)
+ * response             -> event.delivery.reason
+ * attempt              -> (omitted at this time)
+ * pool                 -> (omitted at this time)
+ */
+
+// The application emitting the message.
+message Source {
+    string name = 1;
+    string id = 2;
+}
+
+// The third-party ESP through which the email was sent.
+enum Provider {
+    // https://www.mailgun.com/
+    MAILGUN = 0;
+    // https://sendgrid.com/
+    SENDGRID = 1;
+}
+
+// The type of hook event received.
+enum Type {
+    // A new kind of hook event was received.
+    UNKNOWN = 0;
+
+    // The message was rejected by the email provider before even trying to deliver it.
+    DROP = 1;
+
+    // The message was rejected by the receiving server and should generally not be retried. A
+    // hard bounce usually occurs because the email address is invalid, or the account does not
+    // exist.
+    HARD_BOUNCE = 2;
+
+    // The message failed to be delivered or was rejected by the receiving server, usually after
+    // multiple attempts. Another message to that address might succeed in the future. A soft
+    // bounce usually occurs because the mailbox was full or the server was down.
+    SOFT_BOUNCE = 3;
+
+    // The message has been successfully delivered to the receiving server.
+    DELIVER = 4;
+
+    // The recipient has opened the email.
+    OPEN = 5;
+
+    // The recipient clicked a link in the email.
+    CLICK = 6;
+
+    // The recipient marked the email as spam, and their email provider supports routing that
+    // metadata back to the sender.
+    SPAM_REPORT = 7;
+
+    // The customer unsubscribed by clicking a dedicated link in the email.
+    UNSUBSCRIBE = 8;
+}
+
+// Internal metadata appended to the message "envelope".
+message Stamp {
+    // The globally unique message identifier.
+    string message_id = 1;
+
+    // An id attached to the message by the originating system. [SendGrid]
+    string sg_message_id = 2;
+
+    // A unique id for every event, unchanged even in the event of duplicate webhooks. [SendGrid]
+    string sg_event_id = 3;
+
+    // A unique identifier for the server sending the message. Not officially part of the
+    // documentation, but seen in the test hooks. [Mailgun]
+    string mg_server_id = 4;
+
+    // The path to the payload that generated this hook.
+    string payload_path = 5;
+}
+
+// Metadata concerning the sender and recipient of the message.
+message Envelope {
+    // Provider that delivered the hook event.
+    Provider provider = 1;
+
+    // When the hook event occurred.
+    google.protobuf.Timestamp timestamp = 2;
+
+    // Domain through which the message was sent. [Mailgun]
+    string domain = 3;
+
+    // Which server IP address was used to send the email. [SendGrid]
+    string ip = 4;
+
+    // The recipient of the email.
+    string recipient = 5;
+
+    // Internal metadata appended to the message "envelope".
+    Stamp stamp = 6;
+}
+
+// Interactions with the receiving mail server.
+message Delivery {
+    // SMTP status code
+    string code = 1;
+
+    // Textual status description or separately provided reason.
+    string reason = 2;
+}
+
+// Interactions with the recipient
+message Engagement {
+    // User agent string of the client triggered the event.
+    string user_agent = 1;
+
+    // The URL that was clicked, for CLICK hook events.
+    string url = 2;
+
+    // The IP from which the engagement was triggered.
+    string ip = 3;
+}
+
+message Hook {
+    // The application emitting the message.
+    Source source = 1;
+
+    // The overarching type of the hook.
+    Type type = 2;
+
+    // Metadata concerning the sender and recipient of the message.
+    Envelope envelope = 3;
+
+    oneof event {
+        // Interactions with the receiving mail server.
+        Delivery delivery = 4;
+
+        // Interactions with the recipient.
+        Engagement engagement = 5;
+    }
+
+    // Any custom arguments for the recipient.
+    map<string, string> arguments = 6;
+}

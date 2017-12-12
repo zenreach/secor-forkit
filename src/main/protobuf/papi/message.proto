@@ -1,0 +1,46 @@
+syntax = "proto3";
+option go_package = "github.com/zenreach/platypus/protocols/papi";
+
+package zenreach.papi;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+import "common/events.proto";
+
+// WebhookMessage represents a generic delivery message that is accepted by a v1 receiver.
+message WebhookMessage {
+    // uid is a unique identifier for this message.
+    string uid = 1;
+
+    // The time this message was created.
+    google.protobuf.Timestamp created = 3;
+
+    // the number of times this message has been delivered.
+    uint64 attempts = 4;
+
+    // The resource url that describes the event which triggered this delivery.
+    // Example: https://api.zenreach.com/events/contact.create
+    string event_url = 5;
+
+    // The resource url of the account owner associated with this delivery. 
+    // Example: https://api.zenreach.com/accounts/0000000000000000000000000
+    // This corresponds to the mongo ObjectId of a top level business parent.
+    string account_url = 6;
+
+    // The message's payload.
+    // Example Contact.
+    google.protobuf.Any payload = 7;
+
+}
+
+// WebhookDeliveryEvent wraps a webhook delivery message.
+message DeliverWebhookMessageEvent {
+    // Event metadata.
+    zenreach.common.EventMeta meta = 1;
+
+    // The webhook message to be delivered.
+    WebhookMessage webhookMessage = 2;
+
+    // Delivery Metadata
+    map<string, string> delivery_meta = 3;
+}

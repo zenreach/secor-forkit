@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.pinterest.secor.common.SecorConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
@@ -38,8 +39,6 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.s3a.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.pinterest.secor.common.SecorConfig;
 
 /**
  * File util implements utilities for interactions with the file system.
@@ -236,7 +235,7 @@ public class FileUtil {
         }
         return modificationTime;
     }
-    
+
     /** Generate MD5 hash of topic and partitions. And extract first 4 characters of the MD5 hash.
      * @param topic
      * @param partitions

@@ -1,0 +1,16 @@
+syntax = "proto3";
+option go_package = "github.com/zenreach/platypus/protocols/papi";
+
+package zenreach.papi;
+
+// A Date is a legacy day-month-year formatted date.
+message Date {
+    // The Date's day.
+    int32 day = 1;
+
+    // The Date's month.
+    int32 month = 2;
+
+    // The Date's year.
+    int32 year = 3;
+}

@@ -16,6 +16,7 @@
  */
 package com.pinterest.secor.common;
 
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +30,7 @@ import scala.collection.Map$;
 import scala.collection.immutable.List;
 import scala.collection.immutable.List$;
 import scala.util.matching.Regex;
+import scala.collection.JavaConversions;
 
 /**
  * OstrichAdminService initializes export of metrics to Ostrich.
@@ -53,7 +55,7 @@ public class OstrichAdminService {
             Option.<String>empty(),
             List$.MODULE$.<Regex>empty(),
             Map$.MODULE$.<String, CustomHttpHandler>empty(),
-            List.<Duration>fromArray(defaultLatchIntervals)
+            JavaConversions.iterableAsScalaIterable(Arrays.asList(defaultLatchIntervals)).toList()
         );
         RuntimeEnvironment runtimeEnvironment = new RuntimeEnvironment(this);
         adminServiceFactory.apply(runtimeEnvironment);
@@ -65,7 +67,7 @@ public class OstrichAdminService {
                      properties.getProperty("build_revision", "unknown"));
             StatsUtil.setLabel("secor.build_revision", buildRevision);
         } catch (Throwable t) {
-            LOG.error("Failed to load properties from build.properties", t);
+            LOG.warn("Failed to load properties from build.properties", t);
         }
     }
 }

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package zenreach.realtimecustomerlist;
+
+option go_package = "github.com/zenreach/platypus/protocols/realtimecustomerlist";
+option java_package = "com.zenreach.realtimecustomerlist";
+
+message CustomerVisitNotification {
+    bytes businessprofile_id      = 1;
+    bytes customer_id             = 2;
+    map<string, string> contents  = 3;
+    map<string, string> headings  = 4;
+    map<string, string> subtitles = 5;
+    uint64 sent_timestamp         = 6;
+    int32 ttl                     = 7;
+    bytes data                    = 8;
+}
+
+message BroadcastNotification {
+    map<string, string> contents  = 1;
+    map<string, string> headings  = 2;
+    map<string, string> subtitles = 3;
+    uint64 sent_timestamp         = 4;
+    bytes data                    = 5;
+}

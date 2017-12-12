@@ -15,7 +15,26 @@ Secor is a service persisting [Kafka] logs to [Amazon S3], [Google Cloud Storage
   - **customizability**: external log message parser may be loaded by updating the configuration,
   - **event transformation**: external message level transformation can be done by using customized class.
   - **Qubole interface**: Secor connects to [Qubole] to add finalized output partitions to Hive tables.
+  
+## Docker Build
 
+```bash
+git clone git@github.com:zenreach/secor.git
+cd secor
+mvn package
+docker build -t <tag> .
+```
+
+#### Supported Environment Variables
+
+- `KAFKA_BROKER` is the host:port of the kafka broker
+- `KAFKA_GROUP` is the kafka consumer group to use
+- `TOPIC_FILTER`
+    is the topic regex to subscribe to
+- `ZOOKEEPER` is the zookeeper host:port
+- `PROTOBUF_CLASS` is the Java protobuf class
+- `LOCAL_FILE_PATH` is the path on the local directory to store files
+- `REMOTE_PATH` is the remote path to store files
 ## Setup Guide
 
 ##### Get Secor code

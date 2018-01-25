@@ -34,6 +34,7 @@ docker build -t <tag> .
 - `ZOOKEEPER` is the zookeeper host:port
 - `PROTOBUF_CLASS` is the Java protobuf class
 - `LOCAL_FILE_PATH` is the path on the local directory to store files
+- `REMOTE_URL` is the remote url to store files
 - `REMOTE_PATH` is the remote path to store files
 ## Setup Guide
 

@@ -19,6 +19,7 @@ case class HostPort(str: String) extends AnyVal {
 case class EnvConfig(
   kafkaGroup: String,
   kafkaBroker: HostPort,
+  remoteUrl: String,
   remotePath: String,
   zookeeperHost: HostPort,
   topicFilter: String,
@@ -26,10 +27,10 @@ case class EnvConfig(
   localPath: String = File.createTempFile("secor", "archives").getAbsolutePath,
   statsPort: Int = 9990
 ) {
-  val s3Url: URI = URI.create(remotePath)
+  val s3Url: URI = URI.create(remoteUrl)
   require(s3Url.getScheme == "s3", "Only support S3 at this time as a remote destination")
   val s3Bucket: String = s3Url.getHost
-  val s3Path: String = s3Url.getPath
+  val s3Path: String = remotePath
 
   def toProperties: Map[String, String] = Map(
     "secor.kafka.group" -> kafkaGroup,

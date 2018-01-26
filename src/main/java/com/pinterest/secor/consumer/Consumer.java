@@ -22,6 +22,7 @@ import com.pinterest.secor.common.SecorConfig;
 import com.pinterest.secor.message.Message;
 import com.pinterest.secor.message.ParsedMessage;
 import com.pinterest.secor.monitoring.MetricCollector;
+import com.pinterest.secor.monitoring.PrometheusMetricsCollector;
 import com.pinterest.secor.parser.MessageParser;
 import com.pinterest.secor.reader.MessageReader;
 import com.pinterest.secor.transformer.MessageTransformer;
@@ -159,9 +160,8 @@ public class Consumer extends Thread {
             if (parsedMessage != null) {
                 try {
                     mMessageWriter.write(parsedMessage);
-
                     mMetricCollector.metric("consumer_message_size_bytes", rawMessage.getPayload().length, rawMessage.getTopic());
-                    mMetricCollector.increment("consumer.throughput_bytes", rawMessage.getPayload().length, rawMessage.getTopic());
+                    mMetricCollector.increment("consumer_throughput_bytes", rawMessage.getPayload().length, rawMessage.getTopic());
                 } catch (Exception e) {
                     throw new RuntimeException("Failed to write message " + parsedMessage, e);
                 }

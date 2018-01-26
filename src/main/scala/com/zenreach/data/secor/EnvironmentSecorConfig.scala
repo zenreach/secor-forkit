@@ -25,7 +25,8 @@ case class EnvConfig(
   topicFilter: String,
   protobufClass: String,
   localPath: String = File.createTempFile("secor", "archives").getAbsolutePath,
-  statsPort: Int = 9990
+  statsPort: Int = 9990,
+  prometheusPort: Int = 9400
 ) {
   val s3Url: URI = URI.create(remoteUrl)
   require(s3Url.getScheme == "s3", "Only support S3 at this time as a remote destination")
@@ -42,7 +43,8 @@ case class EnvConfig(
     "secor.local.path" -> localPath,
     "secor.s3.bucket" -> s3Bucket,
     "secor.s3.path" -> s3Path,
-    "ostrich.port" -> statsPort.toString
+    "ostrich.port" -> statsPort.toString,
+    "prometheus.port" -> prometheusPort.toString
   )
 }
 

@@ -259,6 +259,10 @@ public class SecorConfig {
         return getInt("ostrich.port");
     }
 
+    public int getPrometheusPort() {
+        return getInt("prometheus.port");
+    }
+
     public String getCloudService() {
         return getString("cloud.service");
     }

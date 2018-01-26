@@ -1,13 +1,15 @@
 package com.zenreach.data.secor
 
+import java.net.InetSocketAddress
 import java.util
 
-import com.pinterest.secor.common.{OstrichAdminService, SecorConfig}
+import com.pinterest.secor.common.SecorConfig
 import com.pinterest.secor.consumer.Consumer
 import com.pinterest.secor.tools.LogFileDeleter
 import com.pinterest.secor.util.{FileUtil, RateLimitUtil}
 import com.twitter.app.{App, Flag}
 import com.twitter.util.{Await, Future}
+import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.exporter.HTTPServer
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -20,7 +22,7 @@ object ArchiverMain extends App {
   def main(): Unit =
     try {
       val config: SecorConfig = EnvironmentSecorConfig.load()
-      new HTTPServer(config.getOstrichPort)
+      new HTTPServer(new InetSocketAddress("0.0.0.0", config.getPrometheusPort), CollectorRegistry.defaultRegistry)
       FileUtil.configure(config)
       val logFileDeleter: LogFileDeleter = new LogFileDeleter(config)
       logFileDeleter.deleteOldLogs()

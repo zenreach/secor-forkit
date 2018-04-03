@@ -34,4 +34,7 @@ message Blip {
     // @nikhil: this is defined as a string upstream in the location service,
     // but it's usually a 32-bit integer in my experience
     string value = 5;
+
+    // The timestamp when the probe request is received by the server
+    google.protobuf.Timestamp server_time = 6 [(scalapb.field).type = "java.time.Instant"];
 }

@@ -41,8 +41,8 @@ message Sighting {
     uint64 start_time = 5 [(scalapb.field).type = "java.time.Instant"];
     uint64 end_time = 6 [(scalapb.field).type = "java.time.Instant"];
     ProbeStats stats = 7;
-    // map of router mac address to signal stats
-    map<uint64, SignalStats> router_stats = 8 [(scalapb.field).key_type = "com.zenreach.data.types.Mac"];
+    // map of router mac address to signal stats - was never supported/used
+    reserved 8;
     google.protobuf.BoolValue is_walk_in = 9;
 }
 

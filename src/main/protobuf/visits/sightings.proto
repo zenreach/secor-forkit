@@ -31,6 +31,7 @@ message SignalStats {
     google.protobuf.Timestamp last_seen = 2 [(scalapb.field).type = "java.time.Instant"];
     string sensor_type = 3;
     ProbeStats probe_stats = 4;
+    google.protobuf.Timestamp server_last_seen = 5 [(scalapb.field).type = "java.time.Instant"];
 }
 
 message Sighting {
@@ -41,9 +42,10 @@ message Sighting {
     uint64 start_time = 5 [(scalapb.field).type = "java.time.Instant"];
     uint64 end_time = 6 [(scalapb.field).type = "java.time.Instant"];
     ProbeStats stats = 7;
-    // map of router mac address to signal stats - was never supported/used
+    // map of router mac address to signal stats - was never used/supported
     reserved 8;
     google.protobuf.BoolValue is_walk_in = 9;
+    uint64 server_end_time = 10 [(scalapb.field).type = "java.time.Instant"];
 }
 
 // Sighting of a device (at multiple routers)

@@ -8,6 +8,7 @@ option java_package = "com.zenreach.crm";
 import "google/protobuf/timestamp.proto";
 import "scalapb/scalapb.proto";
 import "common/events.proto";
+import "crm/business.proto";
 
 option (scalapb.options) = {
     // All classes that extend a sealed trait need to be in the same Scala
@@ -40,4 +41,13 @@ message CreateContactEvent {
 
     // The contact to create.
     Contact contact = 2;
+
+    // The business entity the event is associated with.
+    zenreach.crm.BusinessEntity business_relation = 3;
+    
+    // True iff this event represents the inital creation of the contact across the network.
+    bool new_to_network = 4;
+
+    // Identifier for source of this event, if known. i.e. "portal", "webform", "import", etc
+    string event_source = 5;
 }

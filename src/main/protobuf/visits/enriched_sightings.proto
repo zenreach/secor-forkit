@@ -19,17 +19,6 @@ option (scalapb.options) = {
     import: "com.zenreach.data.types.ProtobufConversions._"
 };
 
-message MacBusinessIds {
-    bytes client_mac = 1 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
-    repeated bytes business_ids = 2 [(scalapb.field).type = "org.bson.types.ObjectId"];
-}
-
-message ContactMapping {
-    zenreach.crm.Contact contact = 1;
-    bytes client_mac = 2 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
-    repeated bytes business_ids = 3 [(scalapb.field).type = "org.bson.types.ObjectId"];
-}
-
 message EnrichedSighting {
     zenreach.visits.Source source = 1;
     zenreach.visits.Status status = 2;

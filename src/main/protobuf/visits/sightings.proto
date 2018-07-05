@@ -8,7 +8,6 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 import "scalapb/scalapb.proto";
 import "visits/visits.proto";
-import "crm/contacts.proto";
 
 option (scalapb.options) = {
     // All classes that extend a sealed trait need to be in the same Scala
@@ -32,6 +31,11 @@ message SignalStats {
     string sensor_type = 3;
     ProbeStats probe_stats = 4;
     google.protobuf.Timestamp server_last_seen = 5 [(scalapb.field).type = "java.time.Instant"];
+}
+
+message SightingKey {
+    bytes location_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes client = 2 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
 }
 
 message Sighting {

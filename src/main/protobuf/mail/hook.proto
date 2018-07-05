@@ -29,7 +29,7 @@ import "google/protobuf/timestamp.proto";
  * have a reason of "old" if the message could not be sent after eight hours, naturally mapping
  * to a SOFT_BOUNCE. The event will otherwise have a reason of "hardfail". The documentation for
  * "hardfail" is misleading, as it suggests this only occurs if Mailgun rejects an email before
- * even trying to send it, but additionally hard bounces and soft bounces actually also result in 
+ * even trying to send it, but additionally hard bounces and soft bounces actually also result in
  * a "hardfail".
  *
  * More investigation is required into "hardfail" dropped events. For now, we choose to categorize
@@ -89,7 +89,7 @@ import "google/protobuf/timestamp.proto";
  *
  * SendGrid delivers a bounced event if the receiving server could not or would not accept the
  * message, implying that a hard or soft bounce may have occurred. The bounced event is further
- * distinguished by its type field. For now, we choose to categorize as SOFT_BOUNCE to avoid 
+ * distinguished by its type field. For now, we choose to categorize as SOFT_BOUNCE to avoid
  * overclassifying genuine soft bounces. A subsequent attempt to send to an address that actually
  * hard bounced will hit their hard bounce list, and result in a dropped event instead. More
  * investigation is required.
@@ -176,6 +176,12 @@ enum Type {
 
     // The customer unsubscribed by clicking a dedicated link in the email.
     UNSUBSCRIBE = 8;
+
+    // The message request was successfully queued with the mail provider.
+    QUEUE = 9;
+
+    // The message request failed to be queued with the mail provider.
+    FAIL = 10;
 }
 
 // Internal metadata appended to the message "envelope".
@@ -205,7 +211,7 @@ message Envelope {
     // When the hook event occurred.
     google.protobuf.Timestamp timestamp = 2;
 
-    // Domain through which the message was sent. [Mailgun]
+    // Domain through which the message was sent.
     string domain = 3;
 
     // Which server IP address was used to send the email. [SendGrid]
@@ -259,4 +265,34 @@ message Hook {
 
     // Any custom arguments for the recipient.
     map<string, string> arguments = 6;
+
+    // Interaction when enqueuing with the mail provider.
+    Enqueue enqueue = 7;
+}
+
+message Enqueue {
+    // True if the message was sent to the mail provider in "test" mode.
+    bool test_mode = 1;
+
+    // Confirmation string from the mail provider.
+    string confirmation = 2;
+
+    // The recipient was blacklisted and the message was not queued.
+    bool blacklisted = 3;
+
+    // The recipient was whitelisted.
+    bool whitelisted = 4;
+
+    // Email-sending domain used.
+    string domain = 5;
+
+    // Whether recipient was classified as invalid email.
+    bool invalid = 6;
+
+    // ESP IP pool used for sending.
+    string pool = 7;  
+
+    // Whether queuing with an ESP was successful.
+    bool success = 8;
+    
 }

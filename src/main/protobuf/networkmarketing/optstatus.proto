@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package zenreach.networkmarketing;
+
+option go_package = "github.com/zenreach/platypus/protocols/networkmarketing";
+option java_package = "com.zenreach.networkmarketing";
+
+import "scalapb/scalapb.proto";
+import "common/events.proto";
+
+
+// Contact represents a form of contact for an individual.
+message Contact {
+    // Unique ID of the contact.
+    bytes id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+
+    // Method of contact. i.e. "email", "sms", "facebook".
+    string method = 3;
+
+    // The contact identifier for the given method.
+    string info = 4;
+}
+
+enum OptReason {
+    // Welcome email delivered -> user opted in.
+    WELCOME_DELIVERED = 0;
+
+    // User clicked the opt out link.
+    USER_OPT_OUT = 1;
+
+    // A contact was programmatically opted out .
+    API_OPT_OUT = 2;
+}
+
+message OptStatus {
+    // True if this event represents an opt-in.
+    // False if this event represents an opt-out.
+    bool opt_in = 1;
+
+    // Reason for the change in state. ie. "welcome_delivered", "user_opt_out", "api_opt_out"
+    OptReason opt_reason = 2;
+}
+
+message OptMeta {
+    // ID of the corresponding welcome message.
+    // Represented as UUID.
+    bytes id = 1;
+}
+
+message NetworkMarketingOptEvent {
+    // Event metadata.
+    zenreach.common.EventMeta meta = 1;
+
+    // The contact whose opt status is changing.
+    Contact contact = 2;
+
+    // The new opt status.
+    OptStatus status = 3;
+
+    // Additional metadata related to this opt event.
+    OptMeta optmeta = 4;
+}

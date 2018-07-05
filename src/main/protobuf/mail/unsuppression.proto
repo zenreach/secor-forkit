@@ -1,0 +1,20 @@
+syntax = "proto3";
+package zenreach.mail;
+
+option go_package = "github.com/zenreach/platypus/protocols/mail";
+option java_package = "com.zenreach.mail";
+
+import "mail/hook.proto";
+
+// Metadata on unsuppressing the email from the domain
+message Unsuppression {
+  // domain of the email sender
+  string domain = 1;
+
+  // email of the recipient
+  string email = 2;
+
+  // Provider that delivered the hook event.
+  Provider provider = 3;
+}
+

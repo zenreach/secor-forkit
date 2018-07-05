@@ -27,6 +27,9 @@ message Geographical {
 
     // A contact's zip code.
     string zip_code = 4;
+
+    // A contact's country code.
+    string country = 5;
 }
 
 

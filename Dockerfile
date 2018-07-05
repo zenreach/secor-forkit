@@ -1,6 +1,7 @@
 FROM debian:jessie
 MAINTAINER Zenreach <engineering@zenreach.com>
 
+ENV SECOR_VERSION 0.26
 ADD container/java.list /etc/apt/sources.list.d/
 
 # Add Maven dependencies (not shaded into the artifact; Docker-cached)

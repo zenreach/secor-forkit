@@ -1,0 +1,98 @@
+#!/bin/bash
+cd $(dirname "$0")
+
+sanitize() {
+    # removes disallowed characters
+    local pattern='s/[^a-zA-Z0-9._-]/_/g'
+    if [[ -n "$1" ]]; then
+        echo "$@" | sed "$pattern"
+    else
+        sed "$pattern"
+    fi
+}
+
+script=$(basename "$0")
+name=$(basename "$(pwd)" | sed 's/^docker-//' | sanitize)
+secor_version=`cat Dockerfile | grep "ENV SECOR_VERSION" | cut -d " " -f 3`
+if [ -z "$secor_version" ]; then
+    echo "Secor version not set"
+    exit 1
+fi
+last_commit=`git rev-parse --short HEAD`
+version=${secor_version}-${last_commit}
+
+image_name="${name}:$(sanitize $version)"
+
+is_image_built() {
+	docker inspect "$image_name" &> /dev/null
+}
+
+is_latest() {
+	test "$(git branch | egrep '^\* [^(]' | cut -d ' ' -f2)" == "master"
+}
+
+is_clean() {
+	git describe --always --long --dirty | grep -vq dirty
+}
+
+build_image() {
+	docker build -t "$image_name" . || return 1
+	echo "built image $image_name"
+}
+
+image_push() {
+	# usage: image_push REGISTRY TAG
+	local dest_image="$1/$name:$(sanitize "$2")"
+
+	docker tag "$image_name" "$dest_image" || return 1
+	trap "docker rmi $dest_image" EXIT
+	docker push "$dest_image" || return 1
+
+	echo "pushed $image_name to $dest_image"
+}
+
+deploy() {
+	for registry in $IMAGES; do
+		image_push "$registry" "$version" || return 1
+		if is_latest; then
+			image_push "$registry" latest || return 1
+		fi
+	done
+	if [[ -z "$IMAGES" ]]; then
+		echo "set IMAGES to push to image registries"
+	fi
+}
+
+clean() {
+	if is_image_built; then
+		docker rmi "$image_name"
+	fi
+}
+
+case "$1" in
+'')
+	build_image
+	;;
+deploy)
+	if [[ $# -gt 2 ]]; then
+		echo "usage: $script deploy [force]"
+		exit 1
+	fi
+	if ! is_clean && [[ "$2" != "force" ]]; then
+		echo "deploy of dirty repo is not allowed"
+		echo "run \`$script deploy force\` to override"
+		exit 1
+	fi
+	if ! is_image_built; then
+		build_image || exit 1
+	fi
+	deploy
+	;;
+clean)
+	clean
+	;;
+*)
+	echo "usage: $script [build|deploy|clean]"
+	exit 1
+	;;
+esac

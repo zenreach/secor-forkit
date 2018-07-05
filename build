@@ -36,8 +36,9 @@ is_clean() {
 }
 
 build_image() {
-	docker build -t "$image_name" . || return 1
-	echo "built image $image_name"
+  mvn package -P kafka-0.10-dev
+  docker build -t "$image_name" . || return 1
+  echo "built image $image_name"
 }
 
 image_push() {

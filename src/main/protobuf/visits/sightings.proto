@@ -33,11 +33,6 @@ message SignalStats {
     google.protobuf.Timestamp server_last_seen = 5 [(scalapb.field).type = "java.time.Instant"];
 }
 
-message SightingKey {
-    bytes location_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
-    bytes client = 2 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
-}
-
 message Sighting {
     zenreach.visits.Source source = 1;
     zenreach.visits.Status status = 2;

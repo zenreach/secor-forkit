@@ -27,6 +27,11 @@ message Source {
     string id = 2 [(scalapb.field).type = "java.util.UUID"];
 }
 
+message SightingKey {
+    bytes location_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes client = 2 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
+}
+
 message Contact {
     bytes id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
     string method = 2;
@@ -62,7 +67,6 @@ message VisitStats {
     uint64 last_seen_time = 7 [(scalapb.field).type = "com.twitter.util.Time"];
     uint64 visit_count = 8;
     uint64 server_last_seen_time = 9 [(scalapb.field).type = "com.twitter.util.Time"];
-    Status status = 10;
 }
 
 message VisitStatsDiff {

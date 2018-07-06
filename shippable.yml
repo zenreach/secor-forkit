@@ -6,7 +6,7 @@ env:
 build:
   pre_ci_boot:
     image_name: 577004102682.dkr.ecr.us-west-2.amazonaws.com/ci-u16-all
-    image_tag: e00be62
+    image_tag: latest
     pull: true
   ci:
   - ./build

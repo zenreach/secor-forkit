@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package zenreach.visits;
+option go_package = "github.com/zenreach/platypus/protocols/visits";
+option java_package = "com.zenreach.visits";
+
+import "crm/contacts.proto";
+import "crm/facts.proto";
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+    // All classes that extend a sealed trait need to be in the same Scala
+    // file, so we set single_file to true.
+    package_name: "com.zenreach.visits"
+    single_file: true
+    flat_package: true
+    import: "com.zenreach.data.types.ProtobufConversions._"
+};
+
+message UnifiedContact {
+    zenreach.crm.CreateContactEvent contact = 2;
+    zenreach.crm.CreateFactEvent fact = 3;
+}
+
+message ContactMapping {
+    zenreach.crm.Contact contact = 1;
+    bytes client_mac = 2 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
+    repeated bytes business_ids = 3 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    // location id to create contact event mappings
+    map<string, zenreach.crm.CreateContactEvent> contacts = 4;
+}

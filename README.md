@@ -36,6 +36,9 @@ docker build -t <tag> .
 - `LOCAL_FILE_PATH` is the path on the local directory to store files
 - `REMOTE_URL` is the remote url to store files
 - `REMOTE_PATH` is the remote path to store files
+- `OFFSET_RESET` is the kafka auto offset reset policy. "smallest" or "largest" are the choices. "smallest" is the default
+- `PARTITION_FINALIZATION_SECONDS` is the amount of seconds to wait before finalizing a partition. Default is 60 minutes. *Must be larger than the `MAX_BATCH_AGE_SECONDS`*
+- `MAX_BATCH_AGE_SECONDS` is the max age of a batch before uploading to s3. Default is 30 minutes
 ## Setup Guide
 
 ##### Get Secor code

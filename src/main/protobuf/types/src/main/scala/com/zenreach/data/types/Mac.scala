@@ -30,8 +30,12 @@ case class Mac(bytes: Array[Byte]) {
   def strUpperNoColon: String = hexStr("").toUpperCase
   def routerFormat: String = strUpperNoColon
 
+  // Locally administered MACs are not real and should be ignored (except for testing purposes)
   def isLocal: Boolean = (bytes(0) & (1.toByte << 1)) != 0
   def isGlobal: Boolean = !isLocal
+  // Any Client MAC starting with 123 is reserved for internal testing and should be allowed through filters
+  // Related: platform/common/netutil/mac.go
+  def hasTestPrefix: Boolean = (bytes(0) == 0x12.toByte) && ((bytes(1) & (0xf0.toByte)) == 0x30.toByte)
 
   override def toString: String = s"Mac($str)"
 

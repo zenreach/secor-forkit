@@ -35,4 +35,7 @@ message SmartMessageLog {
 
   // rule of trigger
   string rule = 10;
+
+  // time we created this log
+  google.protobuf.Timestamp created_time = 11;
 }

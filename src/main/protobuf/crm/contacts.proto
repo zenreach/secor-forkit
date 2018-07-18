@@ -44,7 +44,7 @@ message CreateContactEvent {
 
     // The business entity the event is associated with.
     zenreach.crm.BusinessEntity business_relation = 3;
-    
+
     // True iff this event represents the inital creation of the contact across the network.
     bool new_to_network = 4;
 

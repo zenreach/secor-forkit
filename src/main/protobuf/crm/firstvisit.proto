@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package zenreach.crm;
+
+option go_package = "github.com/zenreach/platypus/protocols/crm";
+option java_package = "com.zenreach.crm";
+
+import "google/protobuf/timestamp.proto";
+import "crm/business.proto";
+import "crm/contacts.proto";
+
+// FirstVisit represents a first visit event for a contact.
+message FirstVisit {
+    // The contact that had their first visit.
+    Contact contact = 1;
+
+    // The business entity the event is associated with.
+    zenreach.crm.BusinessEntity business_relation = 2;
+
+    // The last time this contact was seen.
+    google.protobuf.Timestamp last_seen = 3;
+}

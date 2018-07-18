@@ -16,5 +16,8 @@ message Unsuppression {
 
   // Provider that delivered the hook event.
   Provider provider = 3;
+
+  // The reason we are unsupressing this recipient, ex: "spam", "unsubscribe"
+  string reason = 4;
 }
 

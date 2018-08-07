@@ -7,13 +7,13 @@ option java_package = "com.zenreach.network.audience";
 enum FbAudienceStatus {
 	NOT_READY = 0;
 	READY = 1;
-  FAILED = 2;
+	FAILED = 2;
 }
 
 enum EventStatus {
 	CREATED = 0;
 	UPDATED = 1;
-  FINISHED = 2;
+	FINISHED = 2;
 }
 
 message FbCustomAudience {

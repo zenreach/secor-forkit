@@ -12,7 +12,7 @@ sanitize() {
 }
 
 script=$(basename "$0")
-name=$(basename "$(pwd)" | sed 's/^docker-//' | sanitize)
+name=$(basename "$(pwd)" | sed 's;\(secor[^/]*\)_.*;\1;' | sanitize)
 secor_version=`cat Dockerfile | grep "ENV SECOR_VERSION" | cut -d " " -f 3`
 if [ -z "$secor_version" ]; then
     echo "Secor version not set"

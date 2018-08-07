@@ -12,10 +12,5 @@ zenreachPipeline([
     build_script: """
          ./build
          ./build deploy
-
-	""",
-    components: [
-			[name: "secor", deployed_in: NO_ENVS]
-		]
+	"""
 ])
-

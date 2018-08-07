@@ -17,28 +17,28 @@ enum EventStatus {
 }
 
 message FbCustomAudience {
-  string location_id = 1;
-  string zr_campaign_id = 2;
-  string fb_audience_id = 3;
-  string zr_audience_id = 4;
-  FbAudienceStatus audience_status = 5;
-  EventStatus event_status = 6;
-  string failed_message = 7;
-  string user_account_id = 8;
-  uint64 created = 9;
+	string location_id = 1;
+	string zr_campaign_id = 2;
+	string fb_audience_id = 3;
+	string zr_audience_id = 4;
+	FbAudienceStatus audience_status = 5;
+	EventStatus event_status = 6;
+	string failed_message = 7;
+	string user_account_id = 8;
+	uint64 created = 9;
 }
 
 message FbLookalikeAudience {
-  string location_id = 1;
-  string zr_campaign_id = 2;
-  string fb_campaign_id = 3;
-  string fb_audience_id = 4;
-  string zr_audience_id = 5;
-  FbAudienceStatus audience_status = 6;
-  EventStatus event_status = 7;
-  string failed_message = 8;
-  string campaign_result = 9;
-  string campaign_response = 10;
-  string business_name = 11;
-  uint64 created = 12;
+	string location_id = 1;
+	string zr_campaign_id = 2;
+	string fb_campaign_id = 3;
+	string fb_audience_id = 4;
+	string zr_audience_id = 5;
+	FbAudienceStatus audience_status = 6;
+	EventStatus event_status = 7;
+	string failed_message = 8;
+	string campaign_result = 9;
+	string campaign_response = 10;
+	string business_name = 11;
+	uint64 created = 12;
 }

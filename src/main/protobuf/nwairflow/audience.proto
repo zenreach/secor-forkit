@@ -33,11 +33,6 @@ enum EventStatus {
 	FINISHED = 2;
 }
 
-message Source {
-	string name = 1;
-	string id = 2;
-}
-
 message AudienceSeed {
 	string location_id = 1;
 	string zr_campaign_id = 2;

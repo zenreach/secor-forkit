@@ -2,7 +2,9 @@ package com.zenreach.data.secor
 
 import java.io.File
 import java.net.URI
+import java.time.temporal.ChronoUnit
 import java.util
+import java.util.concurrent.TimeUnit
 
 import com.pinterest.secor.common.SecorConfig
 import com.typesafe.config.{Config, ConfigFactory}
@@ -26,7 +28,12 @@ case class EnvConfig(
   protobufClass: String,
   localPath: String = File.createTempFile("secor", "archives").getAbsolutePath,
   statsPort: Int = 9990,
-  prometheusPort: Int = 9400
+  prometheusPort: Int = 9400,
+  offsetReset: String = "smallest",
+  // 1 hour
+  partitionFinalizationSeconds: Int = 60 * 60,
+  // 30 minutes
+  maxBatchAgeSeconds: Int = 30 * 60
 ) {
   val s3Url: URI = URI.create(remoteUrl)
   require(s3Url.getScheme == "s3", "Only support S3 at this time as a remote destination")
@@ -44,7 +51,10 @@ case class EnvConfig(
     "secor.s3.bucket" -> s3Bucket,
     "secor.s3.path" -> s3Path,
     "ostrich.port" -> statsPort.toString,
-    "prometheus.port" -> prometheusPort.toString
+    "prometheus.port" -> prometheusPort.toString,
+    "partitioner.finalizer.delay.seconds" -> partitionFinalizationSeconds.toString,
+    "secor.max.file.age.seconds" -> maxBatchAgeSeconds.toString,
+    "kafka.consumer.auto.offset.reset" -> offsetReset
   )
 }
 
@@ -74,6 +84,11 @@ class EnvironmentSecorConfig(props: PropertiesConfiguration, envConfig: EnvConfi
 
   override def getOstrichPort: Int = get(_.statsPort, super.getOstrichPort)
 
+  override def getFinalizerDelaySeconds: Int = get(_.partitionFinalizationSeconds, super.getFinalizerDelaySeconds)
+
+  override def getMaxFileAgeSeconds: Long = get(_.maxBatchAgeSeconds, super.getMaxFileAgeSeconds)
+
+  override def getConsumerAutoOffsetReset: String = get(_.offsetReset, super.getConsumerAutoOffsetReset)
 }
 
 object EnvironmentSecorConfig {

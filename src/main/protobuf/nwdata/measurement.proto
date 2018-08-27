@@ -33,4 +33,5 @@ message FBOfflineEventResult {
     int32 num_processed_entries = 11;
     int32 visit_count = 12;
     string s3_path = 13;
+    int64 created = 14;
 }

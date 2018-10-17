@@ -2,9 +2,7 @@ package com.zenreach.data.secor
 
 import java.io.File
 import java.net.URI
-import java.time.temporal.ChronoUnit
 import java.util
-import java.util.concurrent.TimeUnit
 
 import com.pinterest.secor.common.SecorConfig
 import com.typesafe.config.{Config, ConfigFactory}
@@ -30,10 +28,10 @@ case class EnvConfig(
   statsPort: Int = 9990,
   prometheusPort: Int = 9400,
   offsetReset: String = "smallest",
-  // 1 hour
-  partitionFinalizationSeconds: Int = 60 * 60,
-  // 30 minutes
-  maxBatchAgeSeconds: Int = 30 * 60
+  partitionFinalizationSeconds: Int = 60 * 60, // 1 hour
+  maxBatchAgeSeconds: Int = 30 * 60,  // 30 minutes
+  numberOfConsumerThreads: Int = 7,
+  messagesPerSecond: Int = 1000000
 ) {
   val s3Url: URI = URI.create(remoteUrl)
   require(s3Url.getScheme == "s3", "Only support S3 at this time as a remote destination")
@@ -54,7 +52,9 @@ case class EnvConfig(
     "prometheus.port" -> prometheusPort.toString,
     "partitioner.finalizer.delay.seconds" -> partitionFinalizationSeconds.toString,
     "secor.max.file.age.seconds" -> maxBatchAgeSeconds.toString,
-    "kafka.consumer.auto.offset.reset" -> offsetReset
+    "kafka.consumer.auto.offset.reset" -> offsetReset,
+    "secor.consumer.threads" -> numberOfConsumerThreads.toString,
+    "secor.messages.per.second" -> messagesPerSecond.toString
   )
 }
 
@@ -89,6 +89,10 @@ class EnvironmentSecorConfig(props: PropertiesConfiguration, envConfig: EnvConfi
   override def getMaxFileAgeSeconds: Long = get(_.maxBatchAgeSeconds, super.getMaxFileAgeSeconds)
 
   override def getConsumerAutoOffsetReset: String = get(_.offsetReset, super.getConsumerAutoOffsetReset)
+
+  override def getConsumerThreads: Int = get(_.numberOfConsumerThreads, super.getConsumerThreads)
+
+  override def getMessagesPerSecond: Int = get(_.messagesPerSecond, super.getMessagesPerSecond)
 }
 
 object EnvironmentSecorConfig {

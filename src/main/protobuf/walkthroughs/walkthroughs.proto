@@ -18,24 +18,26 @@ option (scalapb.options) = {
 };
 
 message WalkthroughKey {
-    bytes root_business_tree_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes root_business_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
     bytes user_id = 2 [(scalapb.field).type = "org.bson.types.ObjectId"];
 }
 
 message ContactEvent {
     bytes contacting_business_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
-    google.protobuf.Timestamp timestamp = 2;
+    google.protobuf.Timestamp mail_sent_timestamp = 2;
     map<string, string> arguments = 3;
 }
 
 message VisitEvent {
     bytes visited_business_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
-    google.protobuf.Timestamp timestamp = 2;
+    google.protobuf.Timestamp visit_end_timestamp = 2;
     map<string, string> arguments = 3;
 }
 
 message Walkthrough {
     string source = 1;
-    ContactEvent contactEvent = 2;
-    VisitEvent visitEvent = 3;
+    bytes root_business_id = 2 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes user_id = 3 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    ContactEvent contact_event = 4;
+    VisitEvent visit_event = 5;
 }

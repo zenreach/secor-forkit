@@ -31,4 +31,5 @@ message EnrichedSighting {
     bool in_business_network = 9;
     google.protobuf.BoolValue is_walk_in = 10;
     uint64 server_end_time = 11 [(scalapb.field).type = "java.time.Instant"];
+    bool is_first_contact = 12;
 }

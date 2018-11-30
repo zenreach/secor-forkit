@@ -50,6 +50,7 @@ message Visit {
     bytes client_mac = 10 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
     bool in_business_network = 11;
     uint64 server_end_time = 12 [(scalapb.field).type = "com.twitter.util.Time"];
+    bool is_first_contact = 13;
 }
 
 message VisitStats {
@@ -63,6 +64,7 @@ message VisitStats {
     uint64 visit_count = 8;
     uint64 server_last_seen_time = 9 [(scalapb.field).type = "com.twitter.util.Time"];
     Status status = 10;
+    bool is_first_contact = 11;
 }
 
 message VisitStatsDiff {

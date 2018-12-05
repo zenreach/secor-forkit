@@ -1,7 +1,5 @@
 syntax = "proto3";
-
 package zenreach.walkthroughs;
-
 option go_package = "github.com/zenreach/platypus/protocols/walkthroughs";
 option java_package = "com.zenreach.walkthroughs";
 
@@ -36,8 +34,8 @@ message VisitEvent {
 
 message Walkthrough {
     string source = 1;
-    bytes root_business_id = 2 [(scalapb.field).type = "org.bson.types.ObjectId"];
-    bytes user_id = 3 [(scalapb.field).type = "org.bson.types.ObjectId"];
-    ContactEvent contact_event = 4;
-    VisitEvent visit_event = 5;
+    ContactEvent contact_event = 2;
+    VisitEvent visit_event = 3;
+    bytes root_business_id = 4 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes user_id = 5 [(scalapb.field).type = "org.bson.types.ObjectId"];
 }

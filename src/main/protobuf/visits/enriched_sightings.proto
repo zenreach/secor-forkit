@@ -30,6 +30,6 @@ message EnrichedSighting {
     .zenreach.crm.Contact contact = 8;
     bool in_business_network = 9;
     google.protobuf.BoolValue is_walk_in = 10;
-    uint64 server_end_time = 11 [(scalapb.field).type = "java.time.Instant"];
+    reserved 11; // former server_end_time
     bool is_first_contact = 12;
 }

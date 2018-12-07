@@ -30,7 +30,7 @@ message SignalStats {
     google.protobuf.Timestamp last_seen = 2 [(scalapb.field).type = "java.time.Instant"];
     string sensor_type = 3;
     ProbeStats probe_stats = 4;
-    google.protobuf.Timestamp server_last_seen = 5 [(scalapb.field).type = "java.time.Instant"];
+    reserved 5; // former server_last_seen
 }
 
 message SightingKey {
@@ -46,17 +46,15 @@ message Sighting {
     uint64 start_time = 5 [(scalapb.field).type = "java.time.Instant"];
     uint64 end_time = 6 [(scalapb.field).type = "java.time.Instant"];
     ProbeStats stats = 7;
-    // map of router mac address to signal stats - was never used/supported
-    reserved 8;
+    reserved 8; // map of router mac address to signal stats - was never used/supported
     google.protobuf.BoolValue is_walk_in = 9;
-    uint64 server_end_time = 10 [(scalapb.field).type = "java.time.Instant"];
+    reserved 10; // former server_end_time - no longer needed
 }
 
 // Sighting of a device (at multiple routers)
 // these get turned into `Sighting` objects for each business the routers correspond to
 message DeviceSighting {
     bytes client_mac = 1 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
-
     // The key here is a MAC address, where the 6 bytes are encoded in Network order (big endian)
     // into a unsigned long.
     map<uint64, SignalStats> routers = 2 [(scalapb.field).key_type = "com.zenreach.data.types.Mac"];

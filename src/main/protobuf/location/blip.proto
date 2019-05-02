@@ -17,19 +17,25 @@ option (scalapb.options) = {
     import: "com.zenreach.data.types.ProtobufConversions._"
 };
 
+message MacAnonymization {
+    bytes mac = 1 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
+    google.protobuf.Timestamp ts = 2 [(scalapb.field).type = "java.time.Instant"];
+    bytes anonymization = 3;
+};
+
 message Blip {
     // The string identifier of the sensor type sending us the probe request
     string sensor_type = 1;
-  
+
     // The MAC address of the sensor (encoded in network byte order)
     bytes sensor_mac = 2 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
-  
+
     // The MAC address of the client (device) (encoded in network byte order)
     bytes client_mac = 3 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
-  
+
     // The timestamp of the probe request (sent by the router)
     google.protobuf.Timestamp ts = 4 [(scalapb.field).type = "java.time.Instant"];
-  
+
     // The value received from the sensor (usually RSSI signal strength)
     // @nikhil: this is defined as a string upstream in the location service,
     // but it's usually a 32-bit integer in my experience
@@ -37,4 +43,31 @@ message Blip {
 
     // The timestamp when the probe request is received by the server
     google.protobuf.Timestamp server_time = 6 [(scalapb.field).type = "java.time.Instant"];
+}
+
+message AnonymizedBlip {
+    // The string identifier of the sensor type sending us the probe request
+    string sensor_type = 1;
+
+    // The MAC address of the sensor (encoded in network byte order)
+    bytes sensor_mac = 2 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
+
+    // An anonymization of the client_mac
+    bytes client_mac_anonymization = 3;
+
+    // The timestamp of the probe request (sent by the router)
+    google.protobuf.Timestamp ts = 4 [(scalapb.field).type = "java.time.Instant"];
+
+    // The value received from the sensor (usually RSSI signal strength)
+    // @nikhil: this is defined as a string upstream in the location service,
+    // but it's usually a 32-bit integer in my experience
+    string value = 5;
+
+    // The timestamp when the probe request is received by the server
+    google.protobuf.Timestamp server_time = 6 [(scalapb.field).type = "java.time.Instant"];
+}
+
+message CandidateBlipAnonymization {
+    Blip blip = 1;
+    MacAnonymization macAnonymization = 2;
 }

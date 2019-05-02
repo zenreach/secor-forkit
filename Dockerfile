@@ -9,7 +9,11 @@ RUN mkdir -p /opt/secor
 RUN mkdir -p /tmp/secor_data
 
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
-RUN apt-get update && apt-get -y install wget
+RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
+
+RUN sed -i '/deb http:\/\/deb.debian.org\/debian jessie-updates main/d' /etc/apt/sources.list
+
+RUN apt-get -o Acquire::Check-Valid-Until=false update && apt-get -y install wget
 
 EXPOSE 9990
 

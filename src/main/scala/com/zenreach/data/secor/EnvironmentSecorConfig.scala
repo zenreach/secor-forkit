@@ -29,6 +29,7 @@ case class EnvConfig(
   prometheusPort: Int = 9400,
   offsetReset: String = "smallest",
   partitionFinalizationSeconds: Int = 60 * 60, // 1 hour
+  maxBatchSizeBytes: Int = 200 * 1024 * 1024,  // 200 MB
   maxBatchAgeSeconds: Int = 30 * 60,  // 30 minutes
   numberOfConsumerThreads: Int = 7,
   messagesPerSecond: Int = 1000000
@@ -51,6 +52,7 @@ case class EnvConfig(
     "ostrich.port" -> statsPort.toString,
     "prometheus.port" -> prometheusPort.toString,
     "partitioner.finalizer.delay.seconds" -> partitionFinalizationSeconds.toString,
+    "secor.max.file.size.bytes" -> maxBatchSizeBytes.toString,
     "secor.max.file.age.seconds" -> maxBatchAgeSeconds.toString,
     "kafka.consumer.auto.offset.reset" -> offsetReset,
     "secor.consumer.threads" -> numberOfConsumerThreads.toString,
@@ -85,6 +87,8 @@ class EnvironmentSecorConfig(props: PropertiesConfiguration, envConfig: EnvConfi
   override def getOstrichPort: Int = get(_.statsPort, super.getOstrichPort)
 
   override def getFinalizerDelaySeconds: Int = get(_.partitionFinalizationSeconds, super.getFinalizerDelaySeconds)
+
+  override def getMaxFileSizeBytes: Long = get(_.maxBatchSizeBytes, super.getMaxFileSizeBytes)
 
   override def getMaxFileAgeSeconds: Long = get(_.maxBatchAgeSeconds, super.getMaxFileAgeSeconds)
 

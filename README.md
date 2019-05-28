@@ -38,6 +38,7 @@ docker build -t <tag> .
 - `REMOTE_PATH` is the remote path to store files
 - `OFFSET_RESET` is the kafka auto offset reset policy. "smallest" or "largest" are the choices. "smallest" is the default
 - `PARTITION_FINALIZATION_SECONDS` is the amount of seconds to wait before finalizing a partition. Default is 60 minutes. *Must be larger than the `MAX_BATCH_AGE_SECONDS`*
+- `MAX_BATCH_SIZE_BYTES` is the max size of a batch before uploading to s3. Default is 200MB
 - `MAX_BATCH_AGE_SECONDS` is the max age of a batch before uploading to s3. Default is 30 minutes
 - `NUMBER_OF_CONSUMER_THREADS` is the number of consumer threads. Default is 7
 - `MESSAGES_PER_SECOND` is the max number of messages per second limit. Default is 1000000

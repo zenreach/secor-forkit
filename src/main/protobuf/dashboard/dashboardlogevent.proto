@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package zenreach.dashboard;
+
+option go_package = "github.com/zenreach/platypus/protocols/dashboard";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+message DashboardLogEvent {
+    // Unique ID of the dashboard event.
+    // Represented as UUID.
+    bytes id = 1;
+
+    // Unique ID of the user's session.
+    // Represented as UUID.
+    bytes session_id = 2;
+
+    // When the event occurred.
+    google.protobuf.Timestamp timestamp = 3;
+
+    // The page name (i.e. "overview", "insights", "hotspot")
+    string page = 4;
+
+    // The event object (i.e. "edit message")
+    string event = 5;
+
+    // The type of the operation (i.e. "clicked", "hovered", "viewed")
+    string event_type = 6;
+
+    // Any additional context for this event.
+    // eg. For a "viewed" event, store the page load time
+    // eg. For message blasts, the blast id, etc
+    google.protobuf.Struct event_context = 7;
+
+    // Name of the user's platform
+    // eg. "Mac OS X"
+    string platform = 8;
+
+    // Name of the user's browser
+    // eg. Chrome
+    string browser = 9;
+
+    // Version of the user's browser
+    string browser_version = 10;
+
+    // The uid for the logged in user (a mongo ObjectId)
+    // i.e. "58796a8d21d4f42af08de9d6"
+    bytes user_id = 11;
+
+    // User email address
+    string email = 12;
+
+    // Does the user have staff permissions
+    bool is_staff = 13;
+
+    // Does the user have superuser permissions
+    bool is_superuser = 14;
+
+    // The active business id (a mongo ObjectId)
+    bytes business_id = 15;
+}

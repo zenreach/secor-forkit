@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package zenreach.network.measurement;
+
+option java_package = "com.zenreach.network.measurement.events";
+
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+  // All classes that extend a sealed trait need to be in the same Scala
+  // file, so we set single_file to true.
+  single_file: true
+  flat_package: true
+  import: "com.zenreach.network.data.types.ProtobufConversions._"
+};
+
+message FBBusiness {
+    string id = 1;
+    string name = 2;
+}
+
+message FBOfflineEventResult {
+    FBBusiness business = 1;
+    string zr_business_id = 2;
+    string id = 3;
+    string name = 4;
+    int64 creation_time = 5;
+    int64 event_time_min = 6;
+    int64 event_time_max = 7;
+    int32 valid_entries = 8;
+    int32 matched_entries = 9;
+    int32 duplicate_entries = 10;
+    int32 num_processed_entries = 11;
+    int32 visit_count = 12;
+    string s3_path = 13;
+    int64 created = 14;
+}

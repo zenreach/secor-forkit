@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package zenreach.businesshealth;
+
+option go_package = "github.com/zenreach/platypus/protocols/businesshealth";
+option java_package = "com.zenreach.businesshealth";
+
+import "google/protobuf/timestamp.proto";
+
+// RouterStatus is the latest status of router-related events for a location.
+message RouterStatus {
+    bytes location_id = 1;
+
+    // Timestamp of the last blip we've seen from any router at this location.
+    // Note that this timestamp is the blip's server timestamp.
+    google.protobuf.Timestamp last_blip = 2;
+
+    // Timestamp of the last portal event we've seen from this location.
+    google.protobuf.Timestamp last_portal_event = 3;
+}

@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package zenreach.location;
+
+option go_package = "github.com/zenreach/platypus/protocols/location";
+option java_package = "com.zenreach.location";
+
+import "scalapb/scalapb.proto";
+import "google/protobuf/timestamp.proto";
+
+option (scalapb.options) = {
+    // All classes that extend a sealed trait need to be in the same Scala
+    // file, so we set single_file to true.
+    package_name: "com.zenreach.location"
+    single_file: true
+    flat_package: true
+};
+
+enum CiscoCMXPresenceType {
+  PASSERBY_DETECTED = 0;
+  PASSERBY_BECAME_VISITOR = 1;
+  DEVICE_ABSENCE = 2;
+  VISITOR_WENT_AWAY = 3;
+  SITE_ENTRY_CHANGE = 4;
+}
+
+enum CiscoCMXPresenceStatus {
+  PASSERBY = 0;
+  VISITOR = 1;
+  CONNECTED = 2;
+  GONE = 3;
+}
+
+message CiscoCMXPresenceNotification {
+  // Type of presence notification
+  CiscoCMXPresenceType type = 1;
+
+  // The MAC address of the sensor (encoded in network byte order)
+  bytes sensor_mac = 2;
+
+  // The MAC address of the client (device) (encoded in network byte order)
+  bytes client_mac = 3;
+
+  // The timestamp of the notification (sent by CMX)
+  google.protobuf.Timestamp ts = 4;
+
+  // Last time the client was seen
+  google.protobuf.Timestamp last_seen = 5;
+
+  // RSSI in dBm
+  float rssi = 6;
+
+  // ID of the CMX account
+  string account_id = 7;
+
+  // The current state of the client
+  CiscoCMXPresenceStatus status = 8;
+
+  // Name of the site the notification came from
+  string SiteName = 9;
+
+  // ID of the site the notification came from
+  uint64 SiteID = 10;
+}

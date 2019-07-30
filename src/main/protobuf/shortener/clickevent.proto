@@ -1,0 +1,21 @@
+syntax = "proto3";
+package zenreach.shortener;
+
+option go_package = "github.com/zenreach/platypus/protocols/shortener";
+option java_package = "com.zenreach.shortener";
+
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+    package_name: "com.zenreach.shortener"
+    single_file: true
+    flat_package: true
+};
+
+message ClickEvent {
+    string shortURL = 1;
+    string longURL = 2;
+    map<string, string> context = 3;
+    map<string, string> requestHeaders = 4;
+    uint64 click_time_ms = 5 ;
+}

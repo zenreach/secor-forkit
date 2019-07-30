@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package zenreach.crm;
+
+option go_package = "github.com/zenreach/platypus/protocols/crm";
+option java_package = "com.zenreach.crm";
+
+import "google/protobuf/timestamp.proto";
+import "scalapb/scalapb.proto";
+import "common/events.proto";
+import "crm/business.proto";
+
+option (scalapb.options) = {
+    // All classes that extend a sealed trait need to be in the same Scala
+    // file, so we set single_file to true.
+    package_name: "com.zenreach.crm"
+    single_file: true
+    flat_package: true
+    import: "com.zenreach.data.types.ProtobufConversions._"
+};
+
+// Contact represents a form of contact for an individual.
+message Contact {
+    // Unique ID of the contact.
+    bytes id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+
+    // When the fact was created.
+    google.protobuf.Timestamp created = 2;
+
+    // Method of contact. i.e. "email", "sms", "facebook".
+    string method = 3;
+
+    // The contact identifier for the given method.
+    string info = 4;
+}
+
+// CreateContactEvent triggers Contact creation.
+message CreateContactEvent {
+    // Event metadata.
+    zenreach.common.EventMeta meta = 1;
+
+    // The contact to create.
+    Contact contact = 2;
+
+    // The business entity the event is associated with.
+    zenreach.crm.BusinessEntity business_relation = 3;
+
+    // True iff this event represents the inital creation of the contact across the network.
+    bool new_to_network = 4;
+
+    // Identifier for source of this event, if known. i.e. "portal", "webform", "import", etc
+    string event_source = 5;
+}

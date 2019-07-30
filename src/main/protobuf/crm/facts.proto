@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package zenreach.crm;
+
+option go_package = "github.com/zenreach/platypus/protocols/crm";
+option java_package = "com.zenreach.crm";
+
+import "google/protobuf/timestamp.proto";
+import "scalapb/scalapb.proto";
+import "common/events.proto";
+import "crm/business.proto";
+import "crm/source.proto";
+
+option (scalapb.options) = {
+    // All classes that extend a sealed trait need to be in the same Scala
+    // file, so we set single_file to true.
+    package_name: "com.zenreach.crm"
+    single_file: true
+    flat_package: true
+    import: "com.zenreach.data.types.ProtobufConversions._"
+};
+
+// FactType is the data type stored by the fact.
+enum FactType {
+    // Basic types.
+    STRING    = 0;
+    BYTES     = 1;
+    INTEGER   = 2;
+    FLOAT     = 3;
+    BOOLEAN   = 4;
+
+    // Advanced types.
+    DATE_TIME   = 10;
+    UID         = 11;
+    MAC_ADDRESS = 12;
+
+    // Deprecated types.
+    OBJECT_ID = 90;
+}
+
+// Fact is a point in time datum for a contact.
+message Fact {
+    // The ID of this fact.
+    bytes id = 1 [(scalapb.field).type = "java.util.UUID"];
+
+    // When the fact was created.
+    google.protobuf.Timestamp created = 2;
+
+    // The ID of the contact this fact is associated with.
+    bytes contact_id = 3 [(scalapb.field).type = "org.bson.types.ObjectId"];
+
+    // The data type of the fact.
+    FactType type = 4;
+
+    // The name of the fact.
+    string name = 5;
+
+    // The value of the fact. Encoded as the given type.
+    string value = 6;
+    
+    // optional fields
+
+    // The business entity the fact is associated with. If not set the fact
+    // applies to all locations.
+    BusinessEntity business_relation = 100;
+
+    // The source of the fact.
+    SourceEntity source = 101;
+}
+
+// CreateFactEvent triggers Fact creation.
+message CreateFactEvent {
+    // Event metadata.
+    zenreach.common.EventMeta meta = 1;
+
+    // The fact to create.
+    Fact fact = 2;
+}

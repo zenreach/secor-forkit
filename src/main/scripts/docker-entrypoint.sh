@@ -123,13 +123,13 @@ if [[ ! -z "$SECOR_MESSAGE_PARSER" ]]; then
 fi
 SECOR_CONFIG="$SECOR_CONFIG $SECOR_EXTRA_OPTS"
 
-
 cd /opt/secor
-
 
 DEFAULT_CLASSPATH="*:lib/*"
 CLASSPATH=${CLASSPATH:-$DEFAULT_CLASSPATH}
 
+
 java -Xmx${JVM_MEMORY:-512m} $JAVA_OPTS -ea -Dsecor_group=${SECOR_GROUP:-partition} -Dlog4j.configuration=file:${LOG4J_CONFIGURATION:-log4j.docker.properties} \
         -Dconfig=${CONFIG_FILE:-secor.prod.partition.properties} $SECOR_CONFIG \
         -cp $CLASSPATH ${SECOR_MAIN_CLASS:-com.pinterest.secor.main.ConsumerMain}
+# java -Xmx${JVM_MEMORY:-512m} $JAVA_OPTS -ea -cp $CLASSPATH com.zenreach.data.secor.ArchiverMain $@

@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package zenreach.network.audience;
+
+option java_package = "com.zenreach.network.audience";
+
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+	// All classes that extend a sealed trait need to be in the same Scala
+	// file, so we set single_file to true.
+	single_file: true
+	flat_package: true
+	import: "com.zenreach.network.data.types.ProtobufConversions._"
+};
+
+enum SeedType {
+	SEED_0 = 0;
+	SEED_1 = 1;
+	SEED_2 = 2;
+	SEED_3 = 3;
+}
+
+enum FbAudienceStatus {
+	NOT_READY = 0;
+	READY = 1;
+	FAILED = 2;
+}
+
+enum EventStatus {
+	CREATED = 0;
+	UPDATED = 1;
+	FINISHED = 2;
+}
+
+message AudienceSeed {
+	string location_id = 1;
+	string zr_campaign_id = 2;
+	SeedType seed_version = 3;
+	string file_path = 4;
+	uint32 size = 5;
+	string user_account_id = 6;
+	string airflow_response = 7;
+}
+
+message FbCustomAudience {
+	string location_id = 1;
+	string zr_campaign_id = 2;
+	string fb_audience_id = 3;
+	string zr_audience_id = 4;
+	FbAudienceStatus audience_status = 5;
+	EventStatus event_status = 6;
+	string failed_message = 7;
+	string user_account_id = 8;
+	uint64 created = 9;
+}
+
+message FbLookalikeAudience {
+	string location_id = 1;
+	string zr_campaign_id = 2;
+	string fb_campaign_id = 3;
+	string fb_audience_id = 4;
+	string zr_audience_id = 5;
+	FbAudienceStatus audience_status = 6;
+	EventStatus event_status = 7;
+	string failed_message = 8;
+	string campaign_result = 9;
+	string campaign_response = 10;
+	string business_name = 11;
+	uint64 created = 12;
+}

@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package zenreach.smartmessage;
+option go_package = "github.com/zenreach/platypus/protocols/smartmessage";
+option java_package = "com.zenreach.smartmessage";
+
+import "google/protobuf/timestamp.proto";
+
+message SmartMessageLog {
+  // business id
+  string business_id = 1;
+
+  // user profile id
+  string user_profile_id = 2;
+
+  // contact method
+  string contact_method = 3;
+
+  // contact info
+  string contact_info = 4;
+
+  // visit count
+  uint32 visit_count = 5;
+
+  google.protobuf.Timestamp last_seen_time = 6;
+
+  // id of the trigger
+  string trigger_id = 7;
+
+  // title of trigger
+  string trigger_title = 8;
+
+  // message id
+  string message_id = 9;
+
+  // rule of trigger
+  string rule = 10;
+
+  // time we created this log
+  google.protobuf.Timestamp created_time = 11;
+}

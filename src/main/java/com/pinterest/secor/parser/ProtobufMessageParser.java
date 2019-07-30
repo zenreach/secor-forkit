@@ -21,19 +21,18 @@ package com.pinterest.secor.parser;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.util.Timestamps;
+import com.pinterest.secor.common.SecorConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.CodedInputStream;
-import com.pinterest.secor.common.SecorConfig;
 import com.pinterest.secor.message.Message;
 import com.pinterest.secor.util.ProtobufUtil;
 
 /**
  * Protocol buffer message timestamp extractor
- * 
+ *
  * If <code>secor.protobuf.message.class</code> is not set assumes that the very
  * first <code>uint64</code> field in a message is the timestamp. Otherwise,
  * uses <code>message.timestamp.name</code> as a path to get to the timestamp

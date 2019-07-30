@@ -20,13 +20,44 @@ package com.pinterest.secor.common;
 
 import com.pinterest.secor.message.Message;
 import org.apache.thrift.TException;
+import com.pinterest.secor.timestamp.KafkaMessageTimestampFactory;
+import kafka.api.FetchRequestBuilder;
+import kafka.api.PartitionOffsetRequestInfo;
+import kafka.common.TopicAndPartition;
+import kafka.javaapi.FetchResponse;
+import kafka.javaapi.OffsetRequest;
+import kafka.javaapi.OffsetResponse;
+import kafka.javaapi.PartitionMetadata;
+import kafka.javaapi.TopicMetadata;
+import kafka.javaapi.TopicMetadataRequest;
+import kafka.javaapi.TopicMetadataResponse;
+import kafka.javaapi.consumer.SimpleConsumer;
+import kafka.message.MessageAndOffset;
+import org.apache.kafka.common.protocol.Errors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public interface KafkaClient {
     int getNumPartitions(String topic);
 
-    Message getLastMessage(TopicPartition topicPartition) throws TException;
-
     Message getCommittedMessage(TopicPartition topicPartition) throws Exception;
+
+    public Message getLastMessage(TopicPartition topicPartition) throws TException {
+        SimpleConsumer consumer = null;
+        try {
+            consumer = createConsumer(topicPartition);
+            long lastOffset = findLastOffset(topicPartition, consumer);
+            if (lastOffset < 1) {
+                return null;
+            }
+            return getMessage(topicPartition, lastOffset, consumer);
+        } finally {
+            if (consumer != null) {
+                consumer.close();
+            }
+        }
+    }
 
     void init(SecorConfig config);
 }

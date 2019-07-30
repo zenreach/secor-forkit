@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package zenreach.campaigns;
+
+option go_package = "github.com/zenreach/platypus/protocols/campaigns";
+option java_package = "com.zenreach.campaigns";
+
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+    // All classes that extend a sealed trait need to be in the same Scala
+    // file, so we set single_file to true.
+    package_name: "com.zenreach.campaigns"
+    single_file: true
+    flat_package: true
+    import: "com.zenreach.data.types.ProtobufConversions._"
+};
+
+message WalkthroughKey {
+    // The unique identifier from campaigns_walkthroughs_message_log
+    string message_log_id = 1;
+}
+
+message Walkthrough {
+    // The unique identifier from campaigns_walkthroughs_message_log
+    string message_log_id = 1;
+
+    // The business that sent the message
+    string business_id = 2;
+
+    // The contact to which the message was sent
+    string contact_id = 3;
+
+    // The message that was sent. This will be the message_id for email, but for SMS it's just the
+    // blast_id for now. We will generalize this value when we support smart SMS messages.
+    string message_id = 4;
+
+    // The means by which the message was sent to the contact
+    string contact_method = 5;
+
+    // The contact information for the method in question, e.g. phone number or email
+    string contact_info = 6;
+
+    // The timestamp in milliseconds when the message was sent
+    uint64 sent_time_ms = 7 [(scalapb.field).type = "com.twitter.util.Time"];
+
+    // The location that triggered the walkthrough, a descendant-or-same of the sending business_id.
+    string visited_location_id = 8;
+
+    // The timestamp in milliseconds when the walkthrough occurred
+    uint64 visited_time_ms = 9 [(scalapb.field).type = "com.twitter.util.Time"];
+}

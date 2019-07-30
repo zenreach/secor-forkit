@@ -1,0 +1,70 @@
+syntax = "proto3";
+package zenreach.mail;
+
+option go_package = "github.com/zenreach/platypus/protocols/mail";
+option java_package = "com.zenreach.mail";
+
+import "scalapb/scalapb.proto";
+
+message MailAddress {
+    string name = 1;
+
+    string address = 2;
+}
+
+message DomainPoolInfo  {
+    string domain = 1;
+
+    string pool = 2;
+
+    string esp = 3;
+
+    string api_key = 4;
+
+    bool blacklisted = 5;
+
+    bool whitelisted = 6;
+}
+
+// Necessary to nest a map of strings within a map.
+message StringMap {
+    map<string, string> values = 1;
+}
+
+message EmailBatch {
+    // The UUID of the batch.
+    bytes id = 1 [(scalapb.field).type = "java.util.UUID"];
+
+    // Domain pool info associated with the batch.
+    DomainPoolInfo domain_pool_info = 2;
+
+    // Email subject.
+    string subject = 3;
+
+    // Email body is the HTML body.
+    string email_body = 4;
+
+    // The send address for the batch.
+    MailAddress from = 5;
+
+    // Reply to address of the batch.
+    MailAddress reply_to = 6;
+
+    // Recipients is an array of email addresses.
+    repeated string recipients = 7;
+
+    // Should track flag.
+    bool should_track = 8;
+
+    // Flag for if the email batch is in test mode.
+    bool test_mode = 9;
+
+    // Recipient variables string map.
+    map<string, StringMap> recipient_variables = 10;
+
+    // Message variable string map.
+    map<string, string> message_variables = 11;
+
+    // Custom header string map.
+    map<string, string> custom_headers = 12;
+}

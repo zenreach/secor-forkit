@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package zenreach.visits;
+option go_package = "github.com/zenreach/platypus/protocols/visits";
+option java_package = "com.zenreach.visits";
+
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+    // All classes that extend a sealed trait need to be in the same Scala
+    // file, so we set single_file to true.
+    package_name: "com.zenreach.visits"
+    single_file: true
+    flat_package: true
+    import: "com.zenreach.data.types.ProtobufConversions._"
+};
+
+enum Status {
+    NEW = 0;
+    UPDATED = 1;
+    FINISHED = 2;
+    RAW = 3;
+}
+
+message Source {
+    string name = 1;
+    string id = 2 [(scalapb.field).type = "java.util.UUID"];
+}
+
+message Contact {
+    bytes id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    string method = 2;
+    string contact_info = 3;
+}
+
+message VisitKey {
+    bytes location_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes contact_id = 2 [(scalapb.field).type = "org.bson.types.ObjectId"];
+}
+
+message Visit {
+    Source source = 1;
+    Status status = 2;
+    bytes location_id = 3 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes contact_id = 4 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    string contact_info = 5;
+    string contact_method = 6;
+    uint64 start_time = 7 [(scalapb.field).type = "com.twitter.util.Time"];
+    uint64 end_time = 8 [(scalapb.field).type = "com.twitter.util.Time"];
+    bytes client_mac = 10 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
+    bool in_business_network = 11;
+    reserved 12; // former server_end_time
+    bool is_first_contact = 13;
+}
+
+message VisitStats {
+    Source source = 1;
+    bytes location_id = 2 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes contact_id = 3 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    string contact_info = 4;
+    string contact_method = 5;
+    uint64 first_seen_time = 6 [(scalapb.field).type = "com.twitter.util.Time"];
+    uint64 last_seen_time = 7 [(scalapb.field).type = "com.twitter.util.Time"];
+    uint64 visit_count = 8;
+    reserved 9; // former server_last_seen_time
+    Status status = 10;
+    bool is_first_contact = 11;
+}
+
+message VisitStatsDiff {
+    bytes location_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes contact_id = 2 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    uint64 time_diff = 3 [(scalapb.field).type = "com.twitter.util.Duration"];
+    uint64 visit_count = 4;
+}

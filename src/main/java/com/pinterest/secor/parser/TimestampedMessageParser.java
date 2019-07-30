@@ -152,7 +152,7 @@ public abstract class TimestampedMessageParser extends MessageParser implements 
     public abstract long extractTimestampMillis(final Message message) throws Exception;
 
     public long getTimestampMillis(Message message) throws Exception {
-        return (mUseKafkaTimestamp) ? toMillis(message.getTimestamp()) : extractTimestampMillis(message);
+        return (mUseKafkaTimestamp) ? message.getTimestamp() : extractTimestampMillis(message);
     }
 
     protected String[] generatePartitions(long timestampMillis, boolean usingHourly, boolean usingMinutely)

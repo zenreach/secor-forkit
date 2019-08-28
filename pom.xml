@@ -55,6 +55,9 @@
 
         <!-- Name of the directory below src/main/config that contains kafka-version-specific settings -->
         <kafka.properties>kafka-legacy</kafka.properties>
+
+        <scala.version>2.11.8</scala.version>
+        <scala.binary.version>2.11</scala.binary.version>
     </properties>
 
     <distributionManagement>
@@ -144,11 +147,11 @@
 				<dependency>
 					<groupId>org.scala-lang</groupId>
 					<artifactId>scala-library</artifactId>
-					<version>2.11.8</version>
+					<version>${scala.version}</version>
 				</dependency>
 				<dependency>
 					<groupId>com.github.pureconfig</groupId>
-					<artifactId>pureconfig_2.11</artifactId>
+					<artifactId>pureconfig_${scala.binary.version}</artifactId>
 					<version>0.8.0</version>
 				</dependency>
         <dependency>
@@ -309,7 +312,7 @@
         </dependency>
         <dependency>
             <groupId>com.twitter</groupId>
-            <artifactId>ostrich_2.11</artifactId>
+            <artifactId>ostrich_${scala.binary.version}</artifactId>
             <version>9.27.0</version>
         </dependency>
         <dependency>
@@ -759,7 +762,7 @@
                 <dependencies>
                     <dependency>
                         <groupId>com.fasterxml.jackson.module</groupId>
-                        <artifactId>jackson-module-scala_2.10</artifactId>
+                        <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
                         <version>2.9.9</version>
                     </dependency>
                 </dependencies>
@@ -778,7 +781,7 @@
                 </dependency>
                 <dependency>
                     <groupId>com.twitter</groupId>
-                    <artifactId>ostrich_2.10</artifactId>
+                    <artifactId>ostrich_${scala.binary.version}</artifactId>
                     <version>9.18.0</version>
                 </dependency>
             </dependencies>
@@ -815,7 +818,7 @@
                 </dependency>
                 <dependency>
                     <groupId>com.twitter</groupId>
-                    <artifactId>ostrich_2.10</artifactId>
+                    <artifactId>ostrich_${scala.binary.version}</artifactId>
                     <version>9.18.0</version>
                  </dependency>
             </dependencies>
@@ -841,7 +844,7 @@
                 <dependencies>
                     <dependency>
                         <groupId>com.fasterxml.jackson.module</groupId>
-                        <artifactId>jackson-module-scala_2.11</artifactId>
+                        <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
                         <version>2.9.9</version>
                     </dependency>
                 </dependencies>
@@ -854,7 +857,7 @@
                 </dependency>
                 <dependency>
                     <groupId>com.twitter</groupId>
-                    <artifactId>ostrich_2.11</artifactId>
+                    <artifactId>ostrich_${scala.binary.version}</artifactId>
                     <version>9.27.0</version>
               </dependency>
             </dependencies>
@@ -868,7 +871,7 @@
                 <dependencies>
                     <dependency>
                         <groupId>com.fasterxml.jackson.module</groupId>
-                        <artifactId>jackson-module-scala_2.11</artifactId>
+                        <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
                         <version>2.9.9</version>
                     </dependency>
                 </dependencies>
@@ -900,7 +903,7 @@
                 </dependency>
                 <dependency>
                     <groupId>com.twitter</groupId>
-                    <artifactId>ostrich_2.11</artifactId>
+                    <artifactId>ostrich_${scala.binary.version}</artifactId>
                     <version>9.27.0</version>
                 </dependency>
             </dependencies>
@@ -929,7 +932,7 @@
                 <dependencies>
                     <dependency>
                         <groupId>com.fasterxml.jackson.module</groupId>
-                        <artifactId>jackson-module-scala_2.10</artifactId>
+                        <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
                         <version>2.9.9</version>
                     </dependency>
                 </dependencies>
@@ -948,7 +951,7 @@
                 </dependency>
                 <dependency>
                     <groupId>com.twitter</groupId>
-                    <artifactId>ostrich_2.10</artifactId>
+                    <artifactId>ostrich_${scala.binary.version}</artifactId>
                     <version>9.18.0</version>
                 </dependency>
             </dependencies>
@@ -974,7 +977,7 @@
                 <dependencies>
                     <dependency>
                         <groupId>com.fasterxml.jackson.module</groupId>
-                        <artifactId>jackson-module-scala_2.10</artifactId>
+                        <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
                         <version>2.9.9</version>
                     </dependency>
                 </dependencies>
@@ -993,7 +996,7 @@
                 </dependency>
                 <dependency>
                     <groupId>com.twitter</groupId>
-                    <artifactId>ostrich_2.10</artifactId>
+                    <artifactId>ostrich_${scala.binary.version}</artifactId>
                     <version>9.18.0</version>
                 </dependency>
             </dependencies>

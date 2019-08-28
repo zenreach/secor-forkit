@@ -2,6 +2,44 @@
 set -e
 
 
+# <zenerach_hack>
+
+# defaults for legacy/Zenreach
+LOCAL_FILE_PATH=/tmp/secor_data
+ZOOKEEPER_PATH="/"
+
+# translate evironment variables from legacy/Zenreach to modern
+ZOOKEEPER_QUORUM=${ZOOKEEPER_QUORUM:-$ZOOKEEPER_HOST}
+
+KAFKA_SEED_BROKER_HOST=${ZOOKEEPER_QUORUM:-$KAFKA_BROKER}
+
+SECOR_GROUP=${SECOR_GROUP:-$KAFKA_GROUP}
+
+SECOR_KAFKA_TOPIC_FILTER=${SECOR_KAFKA_TOPIC_FILTER:-$TOPIC_FILTER}
+
+S3_PATH=${S3_PATH:-$REMOTE_PATH}
+
+SECOR_MAX_FILE_BYTES=${SECOR_MAX_FILE_BYTES:-$MAX_BATCH_SIZE_BYTES}
+
+SECOR_MAX_FILE_SECONDS=${SECOR_MAX_FILE_SECONDS:-$MAX_BATCH_AGE_SECONDS}
+
+SECOR_LOCAL_PATH=${SECOR_LOCAL_PATH:-$LOCAL_FILE_PATH}
+
+KAFKA_CONSUMER_OFFSET_RESET=${KAFKA_CONSUMER_OFFSET_RESET:-$OFFSET_RESET}
+
+SECOR_CONSUMER_THREADS=${SECOR_CONSUMER_THREADS:-$NUMBER_OF_CONSUMER_THREADS}
+
+SECOR_MESSAGES_PER_SECOND=${SECOR_MESSAGES_PER_SECOND:-$MESSAGES_PER_SECOND}
+
+PARTITIONER_FINALIZATION_DELAY=${PARTITIONER_FINALIZATION_DELAY:-$PARTITION_FINALIZATION_SECONDS}
+
+# todo break up REMOTE
+S3_HOST=$(echo $REMOTE_URL | cut -d'/' -f2)
+SECOR_S3_BUCKET=${SECOR_S3_BUCKET:-$S3_HOST}
+
+# </zenerach_hack>
+
+
 SECOR_CONFIG=''
 
 if [ -z "$ZOOKEEPER_QUORUM" ]; then
@@ -33,7 +71,6 @@ if [[ ! -z "$SECOR_GROUP" ]]; then
     SECOR_CONFIG="$SECOR_CONFIG -Dsecor.kafka.group=$SECOR_GROUP"
     echo "secor.kafka.group=$SECOR_GROUP"
 fi
-
 
 if [[ ! -z "$AWS_REGION" ]]; then
     SECOR_CONFIG="$SECOR_CONFIG -Daws.region=$AWS_REGION"
@@ -108,7 +145,6 @@ if [[ ! -z "$SECOR_MAX_FILE_SECONDS" ]]; then
     echo "secor.max.file.age.seconds=$SECOR_MAX_FILE_SECONDS"
 fi
 
-
 if [[ ! -z "$SECOR_KAFKA_TOPIC_FILTER" ]]; then
     SECOR_CONFIG="$SECOR_CONFIG -Dsecor.kafka.topic_filter=$SECOR_KAFKA_TOPIC_FILTER"
     echo "secor.kafka.topic_filter=$SECOR_KAFKA_TOPIC_FILTER"
@@ -121,6 +157,42 @@ if [[ ! -z "$SECOR_MESSAGE_PARSER" ]]; then
     SECOR_CONFIG="$SECOR_CONFIG -Dsecor.message.parser.class=$SECOR_MESSAGE_PARSER"
     echo "secor.message.parser.class=$SECOR_MESSAGE_PARSER"
 fi
+
+# added for Zenreach/Extending support
+if [[ ! -z "$PROMETHEUS_PORT" ]]; then
+    SECOR_CONFIG="$SECOR_CONFIG -Dprometheus.port=$PROMETHEUS_PORT"
+    echo "prometheus.port=$PROMETHEUS_PORT"
+fi
+if [[ ! -z "$SECOR_LOCAL_PATH" ]]; then
+    SECOR_CONFIG="$SECOR_CONFIG -Dsecor.local.path=$SECOR_LOCAL_PATH"
+    echo "secor.local.path=$SECOR_LOCAL_PATH"
+fi
+if [[ ! -z "$KAFKA_CONSUMER_OFFSET_RESET" ]]; then
+    SECOR_CONFIG="$SECOR_CONFIG -Dsecor.local.path=$SECOR_LOCAL_PATH"
+    echo "kafka.consumer.auto.offset.reset=$SECOR_LOCAL_PATH"
+fi
+
+if [[ ! -z "$SECOR_CONSUMER_THREADS" ]]; then
+    SECOR_CONFIG="$SECOR_CONFIG -Dsecor.consumer.threads=$SECOR_CONSUMER_THREADS"
+    echo "secor.consumer.threads=$SECOR_CONSUMER_THREADS"
+fi
+
+if [[ ! -z "$SECOR_MESSAGES_PER_SECOND" ]]; then
+    SECOR_CONFIG="$SECOR_CONFIG -Dsecor.messages.per.second=$SECOR_MESSAGES_PER_SECOND"
+    echo "secor.messages.per.second=$SECOR_MESSAGES_PER_SECOND"
+fi
+
+if [[ ! -z "$PARTITIONER_FINALIZATION_DELAY" ]]; then
+    SECOR_CONFIG="$SECOR_CONFIG -Dpartitioner.finalizer.delay.seconds=$PARTITIONER_FINALIZATION_DELAY"
+    echo "partitioner.finalizer.delay.seconds=$PARTITIONER_FINALIZATION_DELAY"
+fi
+
+if [[ ! -z "$PROTOBUF_CLASS" ]]; then
+    PROTOBUFF_SETTING="secor.protobuf.message.class.$SECOR_KAFKA_TOPIC_FILTER"
+    SECOR_CONFIG="$SECOR_CONFIG -D$PROTOBUFF_SETTING=$PROTOBUF_CLASS"
+    echo "$PROTOBUFF_SETTING=$PROTOBUF_CLASS"
+fi
+
 SECOR_CONFIG="$SECOR_CONFIG $SECOR_EXTRA_OPTS"
 
 cd /opt/secor
@@ -130,6 +202,5 @@ CLASSPATH=${CLASSPATH:-$DEFAULT_CLASSPATH}
 
 
 java -Xmx${JVM_MEMORY:-512m} $JAVA_OPTS -ea -Dsecor_group=${SECOR_GROUP:-partition} -Dlog4j.configuration=file:${LOG4J_CONFIGURATION:-log4j.docker.properties} \
-        -Dconfig=${CONFIG_FILE:-secor.prod.partition.properties} $SECOR_CONFIG \
+        -Dconfig=${CONFIG_FILE:-defaults.properties} $SECOR_CONFIG \
         -cp $CLASSPATH ${SECOR_MAIN_CLASS:-com.pinterest.secor.main.ConsumerMain}
-# java -Xmx${JVM_MEMORY:-512m} $JAVA_OPTS -ea -cp $CLASSPATH com.zenreach.data.secor.ArchiverMain $@

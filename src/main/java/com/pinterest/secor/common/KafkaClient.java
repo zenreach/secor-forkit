@@ -41,23 +41,9 @@ import org.slf4j.LoggerFactory;
 public interface KafkaClient {
     int getNumPartitions(String topic);
 
-    Message getCommittedMessage(TopicPartition topicPartition) throws Exception;
+    Message getLastMessage(TopicPartition topicPartition) throws TException;
 
-    public Message getLastMessage(TopicPartition topicPartition) throws TException {
-        SimpleConsumer consumer = null;
-        try {
-            consumer = createConsumer(topicPartition);
-            long lastOffset = findLastOffset(topicPartition, consumer);
-            if (lastOffset < 1) {
-                return null;
-            }
-            return getMessage(topicPartition, lastOffset, consumer);
-        } finally {
-            if (consumer != null) {
-                consumer.close();
-            }
-        }
-    }
+    Message getCommittedMessage(TopicPartition topicPartition) throws Exception;
 
     void init(SecorConfig config);
 }

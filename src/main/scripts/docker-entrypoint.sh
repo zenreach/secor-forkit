@@ -34,7 +34,7 @@ SECOR_MESSAGES_PER_SECOND=${SECOR_MESSAGES_PER_SECOND:-$MESSAGES_PER_SECOND}
 PARTITIONER_FINALIZATION_DELAY=${PARTITIONER_FINALIZATION_DELAY:-$PARTITION_FINALIZATION_SECONDS}
 
 # todo break up REMOTE
-S3_HOST=$(echo $REMOTE_URL | cut -d'/' -f2)
+S3_HOST=$(echo $REMOTE_URL | cut -d'/' -f3)
 SECOR_S3_BUCKET=${SECOR_S3_BUCKET:-$S3_HOST}
 
 # </zenerach_hack>
@@ -159,6 +159,10 @@ if [[ ! -z "$SECOR_MESSAGE_PARSER" ]]; then
 fi
 
 # added for Zenreach/Extending support
+if [[ ! -z "$SECOR_FILE_WRITER" ]]; then
+    SECOR_CONFIG="$SECOR_CONFIG -Dsecor.file.reader.writer.factory=$SECOR_FILE_WRITER"
+    echo "secor.file.reader.writer.factory=$SECOR_FILE_WRITER"
+fi
 if [[ ! -z "$PROMETHEUS_PORT" ]]; then
     SECOR_CONFIG="$SECOR_CONFIG -Dprometheus.port=$PROMETHEUS_PORT"
     echo "prometheus.port=$PROMETHEUS_PORT"

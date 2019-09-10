@@ -770,7 +770,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.apache.kafka</groupId>
-                    <artifactId>kafka_2.11</artifactId>
+                    <artifactId>kafka_${scala.binary.version}</artifactId>
                     <version>1.0.0</version>
                     <exclusions>
                         <exclusion>
@@ -807,7 +807,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.apache.kafka</groupId>
-                    <artifactId>kafka_2.10</artifactId>
+                    <artifactId>kafka_${scala.binary.version}</artifactId>
                     <version>0.10.2.2</version>
                     <exclusions>
                         <exclusion>
@@ -852,7 +852,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.apache.kafka</groupId>
-                    <artifactId>kafka_2.11</artifactId>
+                    <artifactId>kafka_${scala.binary.version}</artifactId>
                     <version>1.0.0</version>
                 </dependency>
                 <dependency>
@@ -940,7 +940,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.apache.kafka</groupId>
-                    <artifactId>kafka_2.10</artifactId>
+                    <artifactId>kafka_${scala.binary.version}</artifactId>
                     <version>0.10.2.2</version>
                     <exclusions>
                         <exclusion>
@@ -985,7 +985,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.apache.kafka</groupId>
-                    <artifactId>kafka_2.11</artifactId>
+                    <artifactId>kafka_${scala.binary.version}</artifactId>
                     <version>1.0.0</version>
                     <exclusions>
                         <exclusion>

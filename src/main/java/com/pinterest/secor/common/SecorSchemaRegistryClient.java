@@ -21,6 +21,7 @@ package com.pinterest.secor.common;
 import io.confluent.kafka.schemaregistry.client.CachedSchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
+import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ public class SecorSchemaRegistryClient {
     private static final Logger LOG = LoggerFactory.getLogger(SecorSchemaRegistryClient.class);
 
     protected KafkaAvroDeserializer deserializer;
+    protected KafkaAvroSerializer serializer;
     private final static Map<String, Schema> schemas = new ConcurrentHashMap<>();
     protected SchemaRegistryClient schemaRegistryClient;
 
@@ -53,6 +55,7 @@ public class SecorSchemaRegistryClient {
     //Allows the SchemaRegistryClient to be mocked in unit tests
     protected void init(SecorConfig config) {
         deserializer = new KafkaAvroDeserializer(schemaRegistryClient);
+        serializer = new KafkaAvroSerializer(schemaRegistryClient);
     }
 
     public GenericRecord decodeMessage(String topic, byte[] message) {
@@ -65,6 +68,13 @@ public class SecorSchemaRegistryClient {
             schemas.put(topic, schema);
         }
         return record;
+    }
+
+    public byte[] encodeMessage(String topic, GenericRecord record) {
+        if(record == null) {
+            return null;
+        }
+        return serializer.serialize(topic, record);
     }
 
     public Schema getSchema(String topic) {

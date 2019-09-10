@@ -58,8 +58,10 @@ public class AvroParquetFileReaderWriterFactoryTest extends TestCase {
     private SpecificDatumWriter<GenericRecord> writer;
     private SecorConfig config;
     private SecorSchemaRegistryClient secorSchemaRegistryClient;
-    private  GenericRecord msg1;
-    private  GenericRecord msg2;
+    private GenericRecord msg1;
+    private GenericRecord msg2;
+    private byte[] serializedMsg1;
+    private byte[] serializedMsg2;
 
     @Override
     public void setUp() throws Exception {
@@ -77,12 +79,18 @@ public class AvroParquetFileReaderWriterFactoryTest extends TestCase {
         writer = new SpecificDatumWriter(schema);
 
         config = Mockito.mock(SecorConfig.class);
+
+        //serialize messages
+        SecorSchemaRegistryClient schemaRegistry = new SecorSchemaRegistryClient(config);
+        serializedMsg1 = schemaRegistry.encodeMessage("test-avro-topic", msg1);
+        serializedMsg2 = schemaRegistry.encodeMessage("test-avro-topic", msg2);
+
         when(config.getSchemaRegistryUrl()).thenReturn("");
         secorSchemaRegistryClient = Mockito.mock(SecorSchemaRegistryClient.class);
         when(secorSchemaRegistryClient.getSchema(anyString())).thenReturn(schema);
         mFactory = new AvroParquetFileReaderWriterFactory(config);
-        when(secorSchemaRegistryClient.decodeMessage("test-avro-topic", AvroParquetFileReaderWriterFactory.serializeAvroRecord(writer, msg1))).thenReturn(msg1);
-        when(secorSchemaRegistryClient.decodeMessage("test-avro-topic", AvroParquetFileReaderWriterFactory.serializeAvroRecord(writer, msg2))).thenReturn(msg2);
+        when(secorSchemaRegistryClient.decodeMessage("test-avro-topic", serializedMsg1)).thenReturn(msg1);
+        when(secorSchemaRegistryClient.decodeMessage("test-avro-topic", serializedMsg2)).thenReturn(msg2);
         mFactory.schemaRegistryClient = secorSchemaRegistryClient;
     }
 
@@ -96,8 +104,8 @@ public class AvroParquetFileReaderWriterFactoryTest extends TestCase {
 
         FileWriter fileWriter = mFactory.BuildFileWriter(tempLogFilePath, null);
 
-        KeyValue kv1 = (new KeyValue(23232, AvroParquetFileReaderWriterFactory.serializeAvroRecord(writer, msg1)));
-        KeyValue kv2 = (new KeyValue(23233, AvroParquetFileReaderWriterFactory.serializeAvroRecord(writer, msg2)));
+        KeyValue kv1 = (new KeyValue(23232, serializedMsg1));
+        KeyValue kv2 = (new KeyValue(23233, serializedMsg2));
 
         fileWriter.write(kv1);
         fileWriter.write(kv2);

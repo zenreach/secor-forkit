@@ -1,0 +1,38 @@
+syntax = "proto3";
+option go_package = "github.com/zenreach/platypus/protocols/papi";
+
+import "papi/demographics.proto";
+import "papi/stats.proto";
+import "papi/metadata.proto";
+
+package zenreach.papi;
+
+//  ExternalContact is a protobuf representation of the Public APIs ZenreachContactDetails type that is delivered to external services.
+// NOTE: this is named ExternalContact because of a name-collision with Contact.
+message ExternalContact {
+    // The contact's ID.
+    string id = 1;
+
+    // The method or type of the contact.
+    // Example: "email", "phone", "twitter" etc.
+    string contact_method = 2;
+
+    // contact_info is the actual contact information -- like an email address.
+    // Example: contactinfo@example.com
+    string contact_info = 3;
+
+    // Whether this group or location is allowed to reach this contact.
+    bool is_subscribed = 4;
+
+    // Whether this contact is an employee at the specified group or location.
+    bool is_employee = 5;
+
+    // Demographics information about the contact.
+    Demographics demographics = 6;
+
+    // Statistics about the given contact.
+    Stats stats = 7;
+
+    // Metadata contains contact metadata (labels).
+    Metadata metadata = 8;
+}

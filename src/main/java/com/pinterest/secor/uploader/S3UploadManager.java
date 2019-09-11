@@ -23,7 +23,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.SSEAwsKeyManagementParams;
 import com.amazonaws.services.s3.model.SSECustomerKey;
-import com.pinterest.secor.common.*;
+import com.pinterest.secor.common.SecorConfig;
 import com.pinterest.secor.util.FileUtil;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -43,12 +43,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import com.pinterest.secor.common.LogFilePath;
-import com.pinterest.secor.common.SecorConfig;
-import com.pinterest.secor.util.FileUtil;
 
 /**
  * Manages uploads to S3 using the TransferManager class from the AWS
@@ -96,14 +92,14 @@ public class S3UploadManager extends UploadManager {
 
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         boolean isHttpProxyEnabled = mConfig.getAwsProxyEnabled();
-        
+
         //proxy settings
         if(isHttpProxyEnabled){
         	LOG.info("Http Proxy Enabled for S3UploadManager");
         	String httpProxyHost = mConfig.getAwsProxyHttpHost();
         	int httpProxyPort = mConfig.getAwsProxyHttpPort();
         	clientConfiguration.setProxyHost(httpProxyHost);
-        	clientConfiguration.setProxyPort(httpProxyPort);        	
+        	clientConfiguration.setProxyPort(httpProxyPort);
         }
 
         if (accessKey.isEmpty() || secretKey.isEmpty()) {

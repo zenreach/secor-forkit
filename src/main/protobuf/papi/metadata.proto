@@ -1,0 +1,10 @@
+syntax = "proto3";
+option go_package = "github.com/zenreach/platypus/protocols/papi";
+
+package zenreach.papi;
+
+// Metadata contains contact metdata.
+message Metadata {
+    // tags segment contacts into groups based on their source, etc.
+    repeated string tags = 1;
+}

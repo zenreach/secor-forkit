@@ -1,0 +1,53 @@
+syntax = "proto3";
+package zenreach.walkthroughs;
+option go_package = "github.com/zenreach/platypus/protocols/walkthroughs";
+option java_package = "com.zenreach.walkthroughs";
+
+import "scalapb/scalapb.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option (scalapb.options) = {
+    // All classes that extend a sealed trait need to be in the same Scala
+    // file, so we set single_file to true.
+    package_name: "com.zenreach.walkthroughs"
+    single_file: true
+    flat_package: true
+    import: "com.zenreach.data.types.ProtobufConversions._"
+};
+
+message WalkthroughKey {
+    bytes root_business_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes user_id = 2 [(scalapb.field).type = "org.bson.types.ObjectId"];
+}
+
+message ContactEvent {
+    bytes contacting_business_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    google.protobuf.Timestamp mail_sent_timestamp = 2;
+    map<string, string> arguments = 3;
+    google.protobuf.StringValue deliverytype = 4;
+    google.protobuf.StringValue messagetype = 5;
+    google.protobuf.StringValue provider = 6;
+    google.protobuf.StringValue recipient = 7;
+}
+
+message VisitEvent {
+    bytes visited_business_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    google.protobuf.Timestamp visit_end_timestamp = 2;
+    map<string, string> arguments = 3;
+    google.protobuf.StringValue status = 4;
+    google.protobuf.StringValue contact_info = 5;
+    google.protobuf.StringValue contact_method = 6;
+    bytes client_mac = 7 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
+    google.protobuf.BoolValue in_business_network = 8;
+    google.protobuf.BoolValue is_first_contact = 9;
+}
+
+message Walkthrough {
+    string source = 1;
+    ContactEvent contact_event = 2;
+    VisitEvent visit_event = 3;
+    bytes root_business_id = 4 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes user_id = 5 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    google.protobuf.Timestamp created_timestamp = 6;
+}

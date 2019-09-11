@@ -139,7 +139,7 @@ public class AvroFileReaderWriterFactory implements FileReaderWriterFactory {
 
         private DataFileWriter<GenericRecord> writer;
         private File file;
-
+        private String codecName;
         private String topic;
 
         public AvroFileWriter(LogFilePath logFilePath, CompressionCodec codec) throws IOException {
@@ -147,18 +147,28 @@ public class AvroFileReaderWriterFactory implements FileReaderWriterFactory {
             file.getParentFile().mkdirs();
             LOG.debug("Creating Brand new Writer for path {}", logFilePath.getLogFilePath());
             topic = logFilePath.getTopic();
-            Schema schema = schemaRegistryClient.getSchema(topic);
-            SpecificDatumWriter specificDatumWriter= new SpecificDatumWriter(schema);
-            writer = new DataFileWriter(specificDatumWriter);
-            writer.setCodec(getCodecFactory(codec));
-            writer.create(schema, file);
+            codecName = CompressionCodecName
+                    .fromCompressionCodec(codec != null ? codec.getClass() : null)
+                    .name()
+                    .toLowerCase();
+            //lazily instantiate writer as we need to decode first to populate schema
+            writer = null;
         }
 
-        private CodecFactory getCodecFactory(CompressionCodec codec) {
-            CompressionCodecName codecName = CompressionCodecName
-                    .fromCompressionCodec(codec != null ? codec.getClass() : null);
+        private DataFileWriter<GenericRecord> getWriter() throws IOException {
+            if(writer == null) {
+                Schema schema = schemaRegistryClient.getSchema(topic);
+                SpecificDatumWriter specificDatumWriter= new SpecificDatumWriter(schema);
+                writer = new DataFileWriter(specificDatumWriter);
+                writer.setCodec(getCodecFactory());
+                writer.create(schema, file);
+            }
+            return writer;
+        }
+
+        private CodecFactory getCodecFactory() {
             try {
-                return CodecFactory.fromString(codecName.name().toLowerCase());
+                return CodecFactory.fromString(codecName);
             } catch (AvroRuntimeException e) {
                 LOG.error("Error creating codec factory", e);
             }
@@ -175,13 +185,13 @@ public class AvroFileReaderWriterFactory implements FileReaderWriterFactory {
             GenericRecord record = schemaRegistryClient.decodeMessage(topic, keyValue.getValue());
             LOG.trace("Writing record {}", record);
             if (record != null){
-                writer.append(record);
+                getWriter().append(record);
             }
         }
 
         @Override
         public void close() throws IOException {
-            writer.close();
+            getWriter().close();
         }
     }
 }

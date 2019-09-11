@@ -34,6 +34,7 @@ import scala.collection.immutable.List;
 import scala.collection.immutable.List$;
 import scala.collection.mutable.Buffer;
 import scala.util.matching.Regex;
+import scala.collection.JavaConversions;
 
 /**
  * OstrichAdminService initializes export of metrics to Ostrich.
@@ -71,7 +72,7 @@ public class OstrichAdminService {
                      properties.getProperty("build_revision", "unknown"));
             StatsUtil.setLabel("secor.build_revision", buildRevision);
         } catch (Throwable t) {
-            LOG.error("Failed to load properties from build.properties", t);
+            LOG.warn("Failed to load properties from build.properties", t);
         }
     }
 }

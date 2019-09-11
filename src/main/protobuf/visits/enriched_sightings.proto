@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package zenreach.visits;
+option go_package = "github.com/zenreach/platypus/protocols/visits";
+option java_package = "com.zenreach.visits";
+
+import "crm/contacts.proto";
+import "scalapb/scalapb.proto";
+import "visits/sightings.proto";
+import "visits/visits.proto";
+import "google/protobuf/wrappers.proto";
+
+option (scalapb.options) = {
+    // All classes that extend a sealed trait need to be in the same Scala
+    // file, so we set single_file to true.
+    package_name: "com.zenreach.visits"
+    single_file: true
+    flat_package: true
+    import: "com.zenreach.data.types.ProtobufConversions._"
+};
+
+message EnrichedSighting {
+    zenreach.visits.Source source = 1;
+    zenreach.visits.Status status = 2;
+    bytes location_id = 3 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes client_mac = 4 [(scalapb.field).type = "com.zenreach.data.types.Mac"];
+    uint64 start_time = 5 [(scalapb.field).type = "java.time.Instant"];
+    uint64 end_time = 6 [(scalapb.field).type = "java.time.Instant"];
+    ProbeStats stats = 7;
+    .zenreach.crm.Contact contact = 8;
+    bool in_business_network = 9;
+    google.protobuf.BoolValue is_walk_in = 10;
+    reserved 11; // former server_end_time
+    bool is_first_contact = 12;
+}

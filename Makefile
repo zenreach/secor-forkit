@@ -7,6 +7,8 @@ MVN_OPTS=-DskipTests=true -Dmaven.javadoc.skip=true -P $(MVN_PROFILE) -B -Dorg.s
 
 CONTAINERS=$(shell ls containers)
 
+.PHONY: build container
+
 build:
 	@mvn package $(MVN_OPTS) -P $(MVN_PROFILE)
 
@@ -27,6 +29,9 @@ integration: build
 	cd $(TEST_HOME) && ./scripts/run_tests.sh
 
 test: build unit integration
+
+container: build
+	docker build -t secor .
 
 container_%:
 	docker build -t secor_$* containers/$*

@@ -47,14 +47,17 @@
     </scm>
 
     <properties>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <encoding>UTF-8</encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <parquet.version>1.9.0</parquet.version>
 
         <!-- Name of the directory below src/main/config that contains kafka-version-specific settings -->
         <kafka.properties>kafka-legacy</kafka.properties>
+
+        <scala.version>2.11.8</scala.version>
+        <scala.binary.version>2.11</scala.binary.version>
     </properties>
 
     <distributionManagement>
@@ -141,6 +144,16 @@
             <artifactId>protobuf-java</artifactId>
             <version>3.8.0</version>
         </dependency>
+				<dependency>
+					<groupId>org.scala-lang</groupId>
+					<artifactId>scala-library</artifactId>
+					<version>${scala.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>com.github.pureconfig</groupId>
+					<artifactId>pureconfig_${scala.binary.version}</artifactId>
+					<version>0.8.0</version>
+				</dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java-util</artifactId>
@@ -243,6 +256,23 @@
             <artifactId>hadoop-openstack</artifactId>
             <version>2.7.0</version>
         </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <!-- Hotspot JVM metrics-->
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_hotspot</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <!-- Exposition HTTPServer-->
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_httpserver</artifactId>
+            <version>0.1.0</version>
+        </dependency>
 
         <!-- Parquet file format dependencies -->
         <dependency>
@@ -281,6 +311,11 @@
             <version>0.12.0</version>
         </dependency>
         <dependency>
+            <groupId>com.twitter</groupId>
+            <artifactId>ostrich_${scala.binary.version}</artifactId>
+            <version>9.27.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.twitter.common.zookeeper</groupId>
             <artifactId>lock</artifactId>
             <version>0.0.7</version>
@@ -317,6 +352,11 @@
             <artifactId>powermock-api-mockito</artifactId>
             <version>1.5.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.8.10</version>
         </dependency>
         <dependency>
             <groupId>org.msgpack</groupId>
@@ -372,6 +412,19 @@
             </testResource>
         </testResources>
         <plugins>
+					<plugin>
+						<groupId>net.alchim31.maven</groupId>
+						<artifactId>scala-maven-plugin</artifactId>
+						<version>3.3.1</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>compile</goal>
+									<goal>testCompile</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -440,6 +493,12 @@
                             <descriptors>
                                 <descriptor>src/main/assembly/secor.xml</descriptor>
                             </descriptors>
+                            <archive>
+                                <manifest>
+                                    <mainClass>com.zenreach.data.secor.ArchiverMain</mainClass>
+                                    <addClasspath>true</addClasspath>
+                                </manifest>
+                            </archive>
                         </configuration>
                     </execution>
                 </executions>
@@ -450,6 +509,28 @@
 				<artifactId>protoc-jar-maven-plugin</artifactId>
 				<version>3.8.0</version>
 				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<protocVersion>3.1.0</protocVersion>
+							<includeDirectories>
+								<include>src/main/protobuf</include>
+							</includeDirectories>
+							<inputDirectories>
+								<include>src/main/protobuf</include>
+              </inputDirectories>
+                            <includeStdTypes>true</includeStdTypes>
+							<outputTargets>
+								<outputTarget>
+									<type>java</type>
+                  <outputDirectory>target/generated-sources/protobuf/gen-java</outputDirectory>
+								</outputTarget>
+							</outputTargets>
+						</configuration>
+					</execution>
 					<execution>
 						<id>protobuf-test-sources</id>
 						<phase>generate-test-sources</phase>
@@ -681,7 +762,7 @@
                 <dependencies>
                     <dependency>
                         <groupId>com.fasterxml.jackson.module</groupId>
-                        <artifactId>jackson-module-scala_2.10</artifactId>
+                        <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
                         <version>2.9.9</version>
                     </dependency>
                 </dependencies>
@@ -689,8 +770,8 @@
             <dependencies>
                 <dependency>
                     <groupId>org.apache.kafka</groupId>
-                    <artifactId>kafka_2.10</artifactId>
-                    <version>0.10.2.2</version>
+                    <artifactId>kafka_${scala.binary.version}</artifactId>
+                    <version>1.0.0</version>
                     <exclusions>
                         <exclusion>
                             <groupId>org.slf4j</groupId>
@@ -700,7 +781,7 @@
                 </dependency>
                 <dependency>
                     <groupId>com.twitter</groupId>
-                    <artifactId>ostrich_2.10</artifactId>
+                    <artifactId>ostrich_${scala.binary.version}</artifactId>
                     <version>9.18.0</version>
                 </dependency>
             </dependencies>
@@ -726,7 +807,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.apache.kafka</groupId>
-                    <artifactId>kafka_2.10</artifactId>
+                    <artifactId>kafka_${scala.binary.version}</artifactId>
                     <version>0.10.2.2</version>
                     <exclusions>
                         <exclusion>
@@ -737,7 +818,7 @@
                 </dependency>
                 <dependency>
                     <groupId>com.twitter</groupId>
-                    <artifactId>ostrich_2.10</artifactId>
+                    <artifactId>ostrich_${scala.binary.version}</artifactId>
                     <version>9.18.0</version>
                  </dependency>
             </dependencies>
@@ -763,7 +844,7 @@
                 <dependencies>
                     <dependency>
                         <groupId>com.fasterxml.jackson.module</groupId>
-                        <artifactId>jackson-module-scala_2.11</artifactId>
+                        <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
                         <version>2.9.9</version>
                     </dependency>
                 </dependencies>
@@ -771,12 +852,12 @@
             <dependencies>
                 <dependency>
                     <groupId>org.apache.kafka</groupId>
-                    <artifactId>kafka_2.11</artifactId>
+                    <artifactId>kafka_${scala.binary.version}</artifactId>
                     <version>1.0.0</version>
                 </dependency>
                 <dependency>
                     <groupId>com.twitter</groupId>
-                    <artifactId>ostrich_2.11</artifactId>
+                    <artifactId>ostrich_${scala.binary.version}</artifactId>
                     <version>9.27.0</version>
               </dependency>
             </dependencies>
@@ -790,7 +871,7 @@
                 <dependencies>
                     <dependency>
                         <groupId>com.fasterxml.jackson.module</groupId>
-                        <artifactId>jackson-module-scala_2.11</artifactId>
+                        <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
                         <version>2.9.9</version>
                     </dependency>
                 </dependencies>
@@ -822,7 +903,7 @@
                 </dependency>
                 <dependency>
                     <groupId>com.twitter</groupId>
-                    <artifactId>ostrich_2.11</artifactId>
+                    <artifactId>ostrich_${scala.binary.version}</artifactId>
                     <version>9.27.0</version>
                 </dependency>
             </dependencies>
@@ -851,7 +932,7 @@
                 <dependencies>
                     <dependency>
                         <groupId>com.fasterxml.jackson.module</groupId>
-                        <artifactId>jackson-module-scala_2.10</artifactId>
+                        <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
                         <version>2.9.9</version>
                     </dependency>
                 </dependencies>
@@ -859,7 +940,7 @@
             <dependencies>
                 <dependency>
                     <groupId>org.apache.kafka</groupId>
-                    <artifactId>kafka_2.10</artifactId>
+                    <artifactId>kafka_${scala.binary.version}</artifactId>
                     <version>0.10.2.2</version>
                     <exclusions>
                         <exclusion>
@@ -870,7 +951,7 @@
                 </dependency>
                 <dependency>
                     <groupId>com.twitter</groupId>
-                    <artifactId>ostrich_2.10</artifactId>
+                    <artifactId>ostrich_${scala.binary.version}</artifactId>
                     <version>9.18.0</version>
                 </dependency>
             </dependencies>
@@ -896,7 +977,7 @@
                 <dependencies>
                     <dependency>
                         <groupId>com.fasterxml.jackson.module</groupId>
-                        <artifactId>jackson-module-scala_2.10</artifactId>
+                        <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
                         <version>2.9.9</version>
                     </dependency>
                 </dependencies>
@@ -904,8 +985,8 @@
             <dependencies>
                 <dependency>
                     <groupId>org.apache.kafka</groupId>
-                    <artifactId>kafka_2.10</artifactId>
-                    <version>0.10.2.2</version>
+                    <artifactId>kafka_${scala.binary.version}</artifactId>
+                    <version>1.0.0</version>
                     <exclusions>
                         <exclusion>
                             <groupId>org.slf4j</groupId>
@@ -915,7 +996,7 @@
                 </dependency>
                 <dependency>
                     <groupId>com.twitter</groupId>
-                    <artifactId>ostrich_2.10</artifactId>
+                    <artifactId>ostrich_${scala.binary.version}</artifactId>
                     <version>9.18.0</version>
                 </dependency>
             </dependencies>

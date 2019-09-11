@@ -24,6 +24,9 @@ import com.pinterest.secor.consumer.Consumer;
 import com.pinterest.secor.tools.LogFileDeleter;
 import com.pinterest.secor.util.FileUtil;
 import com.pinterest.secor.util.RateLimitUtil;
+import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.exporter.HTTPServer;
+import java.net.InetSocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +57,10 @@ public class ConsumerMain {
         }
         try {
             SecorConfig config = SecorConfig.load();
+
+            // start prometheus
+            new HTTPServer(new InetSocketAddress("0.0.0.0", config.getPrometheusPort()), CollectorRegistry.defaultRegistry);
+
             OstrichAdminService ostrichService = new OstrichAdminService(config.getOstrichPort());
             ostrichService.start();
             FileUtil.configure(config);
@@ -62,10 +69,19 @@ public class ConsumerMain {
             logFileDeleter.deleteOldLogs();
 
             RateLimitUtil.configure(config);
+
+            Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
+                public void uncaughtException(Thread thread, Throwable exception) {
+                  LOG.error(String.format("Thread %s failed", thread.toString()), exception);
+                  System.exit(1);
+                }
+            };
+
             LOG.info("starting {} consumer threads", config.getConsumerThreads());
             LinkedList<Consumer> consumers = new LinkedList<Consumer>();
             for (int i = 0; i < config.getConsumerThreads(); ++i) {
                 Consumer consumer = new Consumer(config);
+                consumer.setUncaughtExceptionHandler(handler);
                 consumers.add(consumer);
                 consumer.start();
             }

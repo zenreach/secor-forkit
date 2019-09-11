@@ -22,10 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import com.pinterest.secor.common.SecorConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.pinterest.secor.common.SecorConfig;
 import com.pinterest.secor.message.Message;
 
 import net.minidev.json.JSONObject;

@@ -25,6 +25,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.pinterest.secor.common.SecorConfig;
 import com.pinterest.secor.io.FileReader;
 import com.pinterest.secor.io.FileReaderWriterFactory;
 import com.pinterest.secor.io.FileWriter;
@@ -41,7 +42,6 @@ import com.google.common.io.CountingOutputStream;
 import com.pinterest.secor.common.LogFilePath;
 import com.pinterest.secor.io.KeyValue;
 import com.pinterest.secor.util.FileUtil;
-import com.pinterest.secor.common.SecorConfig;
 
 /**
 * Flexible Delimited Text File Reader Writer with Compression

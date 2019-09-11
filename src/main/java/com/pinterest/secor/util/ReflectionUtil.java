@@ -225,7 +225,7 @@ public class ReflectionUtil {
 
         return (MetricCollector) clazz.newInstance();
     }
-    
+
     /**
      * Create a ORCSchemaProvider from it's fully qualified class name. The
      * class passed in by name must be assignable to ORCSchemaProvider and have

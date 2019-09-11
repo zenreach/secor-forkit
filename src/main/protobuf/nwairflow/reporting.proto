@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package zenreach.network.reporting;
+
+option java_package = "com.zenreach.network.reporting";
+
+import "google/protobuf/timestamp.proto";
+
+enum CampaignStatus {
+    ACTIVE = 0;
+    PAUSED = 1;
+    DELETED = 2;
+    ARCHIVED = 3;
+}
+
+message FacebookCampaign {
+    bytes location_id = 1;
+    string zr_campaign_id = 2;
+    string fb_campaign_id = 3;
+    string fb_campaign_name = 4;
+    CampaignStatus status = 5;
+    google.protobuf.Timestamp start_time = 6;
+    google.protobuf.Timestamp end_time = 7;
+    string user_id = 8;
+    google.protobuf.Timestamp reporting_end_time = 9;
+}
+
+message Metrics{
+    int32 impressions       = 1;
+    int32 viewers           = 2;
+    int32 clicks            = 3;
+    int32 calls             = 4;
+    int32 likes             = 5;
+    int32 offer_claims      = 6;
+    int32 offer_redemptions = 7;
+    int32 walkins           = 8;
+    int32 awareness         = 9;
+    int32 guaranteed_impressions       = 10;
+    int32 post_comments                = 11;
+    int32 post_reactions               = 12;
+    int32 page_likes                   = 13;
+    int32 event_responses              = 14;
+}
+
+message FBCampaignReport {
+    string campagin_id                      = 1;
+    bytes location_id                       = 2;
+    string zr_campaign_id                   = 3;
+    string notes                            = 4;
+    string image_url                        = 5;
+    google.protobuf.Timestamp start_time    = 6;
+    google.protobuf.Timestamp end_time      = 7;
+    Metrics metrics                         = 8;
+    google.protobuf.Timestamp created_time  = 9;
+    string campaign_name                    = 10;
+}
+

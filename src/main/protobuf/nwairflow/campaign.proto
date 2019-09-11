@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package zenreach.network.campaigns;
+
+option java_package = "com.zenreach.network.campaigns";
+
+message FbCampaignResult {
+	string location_id = 1;
+	string zr_campaign_id = 2;
+	string fb_campaign_id = 3;
+	string campaign_result = 4;
+	string campaign_response = 5;
+	string business_name = 6;
+	uint64 created = 7;
+}

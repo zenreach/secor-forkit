@@ -1,0 +1,55 @@
+syntax = "proto3";
+option go_package = "github.com/zenreach/platypus/protocols/papi";
+
+import "papi/date.proto";
+
+package zenreach.papi;
+
+// Demographics information for a given contact.
+message Demographics {
+    // Geographical demographics information.
+    Geographical geographical = 1;
+
+    // Personal demographics information.
+    Personal personal = 2;
+}
+
+// Geographical Demographic information.
+message Geographical {
+    // A contact's city.
+    string city = 1;
+
+    // A contact's free form address for international addresses.
+    string freeform_address = 2;
+
+    // A contact's state.
+    string state = 3;
+
+    // A contact's zip code.
+    string zip_code = 4;
+
+    // A contact's country code.
+    string country = 5;
+}
+
+
+// Personal demographic information.
+message Personal {
+    // age group is the contacts age group.
+    string age_group = 1;
+
+    /// a day-month-year formatted date.
+    Date birthday = 2;
+
+    // The contact's full name.
+    string full_name = 3;
+
+    // The contact's gender.
+    string gender = 4;
+
+    // A profile picture for a given Contact.
+    string picture = 5;
+ 
+    // A day-month-year formatted date.
+    Date wedding_anniversary = 6;
+}

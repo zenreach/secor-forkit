@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package zenreach.common;
+
+option go_package = "github.com/zenreach/platypus/protocols/common";
+option java_package = "com.zenreach.common";
+
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+    package_name: "com.zenreach.common"
+    single_file: true
+    flat_package: true
+    import: "com.zenreach.data.types.ProtobufConversions._"
+};
+
+enum StatsPeriod {
+    HOURLY = 0;
+    DAILY = 1;
+    WEEKLY = 2;
+    MONTHLY = 3;
+    ANNUALLY = 4;
+}

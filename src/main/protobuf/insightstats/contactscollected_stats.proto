@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package zenreach.insightstats;
+
+option go_package = "github.com/zenreach/platypus/protocols/insightstats";
+option java_package = "com.zenreach.insightstats";
+
+import "google/protobuf/timestamp.proto";
+import "common/statsperiod.proto";
+
+// ContactsCollectedStatsKey is a key that uniquely identifies a ContactsCollectedStats.
+message ContactsCollectedStatsKey {
+    bytes business_id = 1;
+    zenreach.common.StatsPeriod period = 2;
+    google.protobuf.Timestamp start = 3;
+}
+
+// ContactsCollectedStats contains counts for contacts collected at a business, broken down by their
+// "known" status.
+message ContactsCollectedStats {
+    // The period covered by these counts.
+    zenreach.common.StatsPeriod period = 1;
+
+    // When the period starts.
+    // This should be on a boundary that corresponds to the period.
+    // eg. if the period is HOURLY, the start timestamp should be on the hour (no minutes/seconds).
+    google.protobuf.Timestamp start = 2;
+
+    // Unique ID of the business.
+    // Represented as bson ObjectId.
+    bytes business_id = 3;
+
+    // How many contacts collected were of clients known to Zenreach, but did not log in to the
+    // business.
+    int32 network_known_count = 4;
+
+    // How many contacts collected were of clients that logged in to the business.
+    int32 business_known_count = 5;
+
+    // The consumer offset.
+    // This tracks what source data has been included in the stats. A consumer should check that the
+    // offset of it's source data is greater than the stored offset before updating the stats. The
+    // consumer should update the offset any time it updates stats.
+    // Note that the source data for a single stats object needs to come from a single partition,
+    // which is why we only need a single offset.
+    int64 consumer_offset = 6;
+}

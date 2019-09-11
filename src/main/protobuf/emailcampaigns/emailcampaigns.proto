@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+package zenreach.emailcampaigns;
+
+option go_package = "github.com/zenreach/platypus/protocols/emailcampaigns";
+option java_package = "com.zenreach.emailcampaigns";
+
+import "scalapb/scalapb.proto";
+import "google/protobuf/timestamp.proto";
+import "crm/contacts.proto";
+
+option (scalapb.options) = {
+    // All classes that extend a sealed trait need to be in the same Scala
+    // file, so we set single_file to true.
+    package_name: "com.zenreach.emailcampaigns"
+    single_file: true
+    flat_package: true
+    import: "com.zenreach.data.types.ProtobufConversions._"
+};
+
+message BusinessIDContactID {
+    bytes business_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes contact_id = 2 [(scalapb.field).type = "org.bson.types.ObjectId"];
+}
+
+// This represents the email message log and contains information about the message sent and sent time
+message SentMessage {
+    oneof campaign_id {
+        bytes trigger_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+        bytes blast_id = 2 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    }
+    bytes message_log_id = 3 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes message_id = 4 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes business_id = 5 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    zenreach.crm.Contact contact = 6;
+    google.protobuf.Timestamp sent_time = 7;
+    string domain = 8;
+}
+
+message EmailWalkthroughKey {
+    bytes business_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    bytes contact_id = 2 [(scalapb.field).type = "org.bson.types.ObjectId"];
+}
+
+message EmailWalkthrough {
+    // The unique identifier from campaigns_walkthroughs_message_log
+    bytes message_log_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+
+    // The business that sent the message
+    bytes business_id = 2 [(scalapb.field).type = "org.bson.types.ObjectId"];
+
+    // The message that was sent. This will be the message_id for email
+    bytes message_id = 3 [(scalapb.field).type = "org.bson.types.ObjectId"];
+
+    zenreach.crm.Contact contact = 4;
+
+    // The timestamp in milliseconds when the message was sent
+    google.protobuf.Timestamp sent_time = 5;
+
+    // The location that triggered the walkthrough, a descendant-or-same of the sending business_id.
+    bytes visited_location_id = 6 [(scalapb.field).type = "org.bson.types.ObjectId"];
+
+    // The timestamp in milliseconds when the walkthrough occurred
+    google.protobuf.Timestamp visited_time = 7;
+}
+
+// This is a walkthrough calculated by joining the visits and email message log stream
+message EmailWalkthroughValue {
+    repeated EmailWalkthrough emailwalkthrough = 1[(scalapb.field).collection_type="collection.immutable.Set"];
+}
+
+message EmailWalkthroughAssist {
+    EmailWalkthrough emailwalkthrough = 1;
+    repeated uint64 visited_time_set = 2 [(scalapb.field).type = "com.twitter.util.Time"];
+    repeated uint64 email_sent_time_set = 3 [(scalapb.field).type = "com.twitter.util.Time"];
+}
+
+message DailyTrafficKey {
+    // The business that sent the message
+    bytes business_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+
+    // The date for the walkthroughs in the format 'YYYY-MM-DD'
+    string date = 2;
+}
+
+message TrafficValue {
+    // The count for the traffic
+    int32 count = 1;
+}
+
+message MessageStat {
+    // The message that was sent. This will be the message_id for email
+    bytes message_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+
+    // The total number of conversions for the message_id
+    int32 conversions = 2;
+
+    // tuple of date and number of conversions on the day for this message log.
+    // The date is of the format 'yyyy-MM-dd'
+    map<string, int32> cumulative_conversions = 3;
+}
+
+message TrafficQuery {
+    bytes business_id = 1 [(scalapb.field).type = "org.bson.types.ObjectId"];
+    int64 startTs = 2 [(scalapb.field).type = "java.time.Instant"];
+    int64 endTs = 3 [(scalapb.field).type = "java.time.Instant"];
+}
+
+message TrafficResponse {
+    map <int64, int64> trafficCounts = 1 [(scalapb.field).key_type = "java.time.Instant"];
+}
+
+message DarkTrafficValues {
+    TrafficQuery request = 1;
+    TrafficResponse lightResponse = 2;
+    TrafficResponse darkResponse = 3;
+    string lightServiceName = 4;
+}

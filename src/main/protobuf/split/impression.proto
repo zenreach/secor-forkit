@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package zenreach.split;
+option go_package = "github.com/zenreach/platypus/protocols/split";
+option java_package = "com.zenreach.split";
+
+import "google/protobuf/timestamp.proto";
+
+message Impression {
+    // key evaluated
+    string key = 1;
+
+    // split name
+    string split = 2;
+
+    // environment id in which we are evaluating the split
+    string environment_id = 3;
+
+    // environment name
+    string environment_name = 4;
+
+    // treatment we gave to this key
+    string treatment = 5;
+
+    // timestamp when the SDK made the evaluation
+    google.protobuf.Timestamp timestamp = 6;
+
+    // key used for hashing and to determine the treatment bucket
+    string bucketing_key = 7;
+
+    // the rule that was applied to return a treatment
+    string label = 8;
+
+    // hostname of the SDK host (if available)
+    string machine_name = 9;
+
+    // the IP of the SDK host (if available)
+    string machine_ip = 10;
+
+    // the version number of the split equivalent to the generation time
+    int64 split_version_number = 11;
+
+    // the SDK language that evaluated the split
+    string sdk = 12;
+
+    // the SDK version that evaluated the split
+    string sdk_version = 13;
+
+    // reserved for future use
+    string properties = 14;
+}

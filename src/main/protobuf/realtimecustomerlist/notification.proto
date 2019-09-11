@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package zenreach.realtimecustomerlist;
+
+option go_package = "github.com/zenreach/platypus/protocols/realtimecustomerlist";
+option java_package = "com.zenreach.realtimecustomerlist";
+
+// Note that this message will be replaced with a REST API, so changes here will not affect any existing topic.
+message CustomerVisitNotification {
+    string business_id       = 1;
+    string customer_id       = 2;
+    string rule_id           = 3;
+    string template_id       = 4;
+    map<string, string> tags = 5;
+    string experiment_id     = 6;
+    uint64 sent              = 7;
+    int32 ttl                = 8;
+    bytes payload            = 9;
+}

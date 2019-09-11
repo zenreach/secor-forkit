@@ -141,7 +141,7 @@ public class Uploader {
                 if (isOffsetsStorageKafka) {
                     mMessageReader.commit(topicPartition, lastSeenOffset + 1);
                 }
-                mMetricCollector.increment("uploader.file_uploads.count", paths.size(), topicPartition.getTopic());
+                mMetricCollector.increment("uploader_file_uploads_count", paths.size(), topicPartition.getTopic());
             } else {
                 LOG.warn("Zookeeper committed offset didn't match for topic {} partition {}: {} vs {}",
                          topicPartition.getTopic(), topicPartition.getTopic(), zookeeperCommittedOffsetCount,
